@@ -1,0 +1,52 @@
+.search-token-modal > .ant-modal-content {
+	@apply p-3;
+	background: #001529 !important;
+}
+
+.search-token-modal > .ant-modal-content > .ant-modal-close {
+	@apply text-white;
+}
+
+.search-token-modal > .ant-modal-content > .ant-modal-header {
+	background: #001529 !important;
+}
+
+.confirmation-token-modal > .ant-modal-content {
+	@apply p-3;
+	background: #131823 !important;
+}
+
+.confirmation-token-modal > .ant-modal-content > .ant-modal-close {
+	@apply text-white;
+}
+
+.confirmation-token-modal > .ant-modal-content > .ant-modal-header {
+	background: #131823 !important;
+}
+
+.custom-list-item {
+	@apply !py-2 !px-4 !h-20 cursor-pointer;
+}
+
+.custom-list-item:hover {
+	background-color: #99a1bd14;
+	transition: 250;
+}
+
+.custom-list-container::-webkit-scrollbar {
+	width: 5px;
+}
+
+.custom-list-container::-webkit-scrollbar-track {
+	box-shadow: inset 0 0 5px gray;
+	border-radius: 5px;
+}
+
+.custom-list-container::-webkit-scrollbar-thumb {
+	@apply bg-gray-300;
+	border-radius: 5px;
+}
+
+.custom-list-container::-webkit-scrollbar-thumb:hover {
+	@apply bg-slate-500;
+}

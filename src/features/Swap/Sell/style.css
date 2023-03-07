@@ -1,0 +1,57 @@
+.sell-container {
+	@apply text-white text-left text-xs !p-0;
+}
+
+.sell-text-info,
+.sell-balance-info {
+	@apply m-0 hover:!text-white;
+	color: #6c86ad;
+}
+
+.sell-container-token {
+	@apply w-full my-2 flex justify-between;
+}
+
+.sell-wrapper-token {
+	@apply w-2/5 h-8 px-2 flex items-center cursor-pointer;
+}
+
+.sell-wrapper-token:hover {
+	background-color: #99a1bd14;
+	transition: 250;
+}
+
+.sell-name-token {
+	@apply mx-3 w-full font-bold text-white text-lg flex leading-5;
+}
+
+.sell-select-token {
+	@apply w-full text-white text-sm  font-semibold flex leading-5;
+}
+
+.sell-wrapper-balance {
+	@apply w-full flex justify-between;
+}
+
+.sell-input-amount {
+	@apply !border-b-2 border-solid  !border-b-white;
+}
+
+.sell-input-amount:hover:focus::after {
+	@apply !border-t-0 !border-l-0 !border-r-0;
+}
+
+.sell-input-amount > .ant-input-number-input-wrap > .ant-input-number-input {
+	@apply text-white text-end pr-6;
+}
+
+.sell-total-balance {
+	@apply m-0;
+	color: #6c86ad;
+}
+
+@media (max-width: theme("screens.lg")) {
+	.sell-wrapper-token {
+		@apply !w-5/12;
+	}
+}

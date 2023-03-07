@@ -1,0 +1,18 @@
+.chain-container {
+	@apply hidden lg:flex justify-between items-center w-1/6 lg:w-4/12 2xl:w-4/12 h-10 px-3 py-3 mr-2 bg-transparent border-none;
+}
+
+.chain-container:hover {
+	background-color: #99a1bd14;
+	transition: 250;
+}
+
+.chain-label {
+	@apply mx-2 font-bold text-white text-base sm:hidden lg:flex leading-5;
+}
+
+@media (min-width: 2560px) {
+	.chain-container {
+		width: 20%;
+	}
+}

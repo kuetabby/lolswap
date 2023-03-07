@@ -1,0 +1,130 @@
+.chevron-wrapper {
+	background-color: transparent;
+	border: none;
+	cursor: pointer;
+	display: flex;
+	padding: 10px 16px 10px 4px;
+
+	@apply hover:text-blue-500;
+}
+
+.chevron-wrapper:hover:active:focus {
+	border: none;
+}
+
+.status-generic {
+	@apply flex rounded-full outline-none;
+	width: 100%;
+	align-items: center;
+	padding: 0.5rem;
+	cursor: pointer;
+	user-select: none;
+	height: 36px;
+	margin-right: 2px;
+	margin-left: 2px;
+}
+
+.status-error {
+	@apply text-white border border-solid border-white bg-red-500;
+	font-weight: 500;
+}
+
+.status-error:hover:focus {
+	@apply bg-blue-700;
+}
+
+.status-connect-wrapper {
+	@apply flex rounded-full bg-blue-400;
+	align-items: center;
+	border: none;
+	padding: 0;
+	height: 40px;
+}
+
+.status-connect-wrapper:hover:active:focus {
+	border: none;
+}
+
+.status-connected {
+	@apply bg-white text-white;
+	font-weight: 500;
+}
+
+.status-connected:hover {
+	@apply border border-solid border-blue-500;
+}
+.status-connected:focus {
+	@apply border border-solid border-blue-700;
+}
+
+.text {
+	flex: 1 1 auto;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	margin: 0 0.5rem 0 0.25rem;
+	font-size: 1rem;
+	width: fit-content;
+	font-weight: 500;
+}
+
+.network-icon {
+	margin-left: 0.25rem;
+	margin-right: 0.5rem;
+	width: 16px;
+	height: 16px;
+}
+
+.vertical-divider {
+	height: 20px;
+	margin: 0px;
+	width: 1px;
+	@apply bg-blue-500;
+}
+
+.button-connect {
+	@apply flex rounded-full text-white transition-transform hover:text-green-500;
+
+	background-color: transparent;
+	border: none;
+	cursor: pointer;
+	font-weight: 600;
+	font-size: 16px;
+	padding: 10px 8px 10px 12px;
+}
+
+.button-connect:hover:active:focus {
+	border: none;
+}
+
+/* const ChevronWrapper = styled.button`
+`
+
+const Web3StatusGeneric = styled(ButtonSecondary)`
+`
+const Web3StatusError = styled(Web3StatusGeneric)`
+`
+
+const Web3StatusConnectWrapper = styled.div<{ faded?: boolean }>`
+`
+
+const Web3StatusConnected = styled(Web3StatusGeneric)<{
+  pending?: boolean
+  isClaimAvailable?: boolean
+}>`
+`
+
+const AddressAndChevronContainer = styled.div`
+`
+
+const Text = styled.p`
+`
+
+const NetworkIcon = styled(AlertTriangle)`
+`
+
+const VerticalDivider = styled.div`
+`
+
+const StyledConnectButton = styled.button`
+` */

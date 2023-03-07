@@ -1,0 +1,45 @@
+.buy-container {
+	@apply text-white text-left text-xs !p-0;
+}
+
+.buy-text-info,
+.buy-balance-info {
+	@apply m-0 hover:!text-white;
+	color: #6c86ad;
+}
+
+.buy-container-token {
+	@apply w-full my-2 flex justify-between;
+}
+
+.buy-wrapper-token {
+	@apply w-2/5 h-8 px-2 flex items-center cursor-pointer;
+}
+
+.buy-wrapper-token:hover {
+	background-color: #99a1bd14;
+	transition: 250;
+}
+
+.buy-name-token {
+	@apply mx-3 w-full font-bold text-white text-lg flex leading-5;
+}
+
+.buy-select-token {
+	@apply w-full text-white text-sm  font-semibold flex leading-5;
+}
+
+.buy-wrapper-balance {
+	@apply w-full flex justify-between;
+}
+
+.buy-total-balance {
+	@apply m-0;
+	color: #6c86ad;
+}
+
+@media (max-width: theme("screens.lg")) {
+	.buy-wrapper-token {
+		@apply !w-5/12;
+	}
+}

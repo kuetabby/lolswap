@@ -1,0 +1,12 @@
+.chainSelector-container {
+	@apply rounded-lg border-none cursor-pointer bg-none h-10 text-white;
+}
+
+.chainSelector-container:hover::before {
+	@apply opacity-100;
+	transition: 250;
+}
+
+.image {
+	@apply w-5 h-5;
+}

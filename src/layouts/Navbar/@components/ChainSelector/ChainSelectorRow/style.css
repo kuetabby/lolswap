@@ -1,0 +1,66 @@
+.container {
+	display: grid;
+	background: none;
+	grid-template-columns: min-content 1fr min-content;
+	align-items: center;
+	text-align: left;
+	line-height: 24px;
+	border: none;
+	justify-content: space-between;
+	padding: 10px 8px;
+	cursor: pointer;
+	border-radius: 12px;
+	color: white;
+	width: 240px;
+
+	@apply transition-transform hover:bg-white;
+}
+
+.label {
+	grid-column: 2;
+	grid-row: 1;
+	font-size: 16px;
+}
+
+.status {
+	grid-column: 3;
+	grid-row: 1;
+	display: flex;
+	align-items: center;
+}
+
+.approve-text {
+	font-size: 12px;
+	grid-column: 2;
+	grid-row: 2;
+}
+
+.logo {
+	@apply h-5 w-5 mr-3;
+}
+
+@media (max-width: theme("screens.sm")) {
+	.container {
+		@apply w-full;
+	}
+}
+
+/* const Container = styled.button`
+`
+
+const Label = styled.div`
+`
+
+const Status = styled.div`
+  width: ${LOGO_SIZE}px;
+`
+
+const ApproveText = styled.div`
+  color: ${({ theme }) => theme.textSecondary};
+`
+
+const Logo = styled.img`
+  height: ${LOGO_SIZE}px;
+  width: ${LOGO_SIZE}px;
+  margin-right: 12px;
+` */

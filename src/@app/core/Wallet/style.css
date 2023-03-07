@@ -1,0 +1,54 @@
+.content-wrapper {
+	@apply pt-0 pr-4 pb-4 pl-4 bg-transparent rounded-b-2xl;
+}
+
+.header {
+	padding: 1rem 1rem;
+	font-weight: 600;
+	size: 16px;
+}
+
+.modal-body-wrapper {
+	padding: 0;
+	width: 100%;
+}
+
+.upper-section {
+	position: relative;
+}
+
+.upper-section > h4 {
+	margin-top: 0;
+	font-weight: 500;
+}
+
+.upper-section > h5 {
+	margin: 0;
+	margin-bottom: 0.5rem;
+	font-size: 1rem;
+	font-weight: 400;
+}
+
+.upper-section > h5:last-child {
+	@apply mb-0;
+}
+
+.hover-text {
+	display: flex;
+	align-items: center;
+	text-decoration: none;
+
+	@apply hover:cursor-pointer;
+}
+
+.close-icon {
+	position: absolute;
+	right: 1rem;
+	top: 14px;
+
+	@apply hover:cursor-pointer opacity-75;
+}
+
+.close-color {
+	@apply stroke-slate-300;
+}
