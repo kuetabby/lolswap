@@ -36,8 +36,9 @@ const Navbar: React.FC<Props> = () => {
 		<Header className="!px-0 md:!px-4 !h-20">
 			<nav className="base-nav-container">
 				<div className={clsx("base-side-container", "left-side-container")}>
-					<div className="logo-container">
-						<UniIcon
+					<div className="logo-container text-white">
+						PegaSwap
+						{/* <UniIcon
 							width="48"
 							height="48"
 							className="text-white"
@@ -47,7 +48,7 @@ const Navbar: React.FC<Props> = () => {
 							// 		search: "?intro=true",
 							// 	})
 							// }}
-						/>
+						/> */}
 					</div>
 					{/* {!isNftPage && (
 						<div className="sm:flex lg:hidden">
