@@ -13,7 +13,8 @@ import COINBASE_ICON_URL from "#/assets/coinbaseWalletIcon.svg"
 import WALLET_CONNECT_ICON_URL from "#/assets/walletConnectIcon.svg"
 import BROWSER_WALLET_ICON_URL from "#/assets/arrow-right.svg"
 
-import { getIsMetaMaskWallet } from "#/@app/utility/Connection/utils"
+import { getIsCoinbaseWallet, getIsInjected, getIsMetaMaskWallet } from "#/@app/utility/Connection/utils"
+import { isMobile } from "#/@app/utility/UserAgent"
 
 interface Props {
 	isOpenModal: boolean
@@ -24,56 +25,126 @@ interface Props {
 
 const { Meta } = Card
 
-export const SelectWallet: React.FC<Props> = ({ isOpenModal, isPending, onCloseModal, tryActivation }) => {
+const browserWalletList = [
+	{
+		connector: metaMaskConnection.connector,
+		title: "MetaMask",
+		imageUrl: METAMASK_ICON_URL,
+	},
+	{
+		connector: metaMaskConnection.connector,
+		title: "Browser Wallet",
+		imageUrl: BROWSER_WALLET_ICON_URL,
+	},
+	{
+		connector: coinbaseWalletConnection.connector,
+		title: "Coinbase Wallet",
+		imageUrl: COINBASE_ICON_URL,
+	},
+	{
+		connector: walletConnectConnection.connector,
+		title: "WalletConnect",
+		imageUrl: WALLET_CONNECT_ICON_URL,
+	},
+]
+
+const browserWallet = () => {
+	const isInjected = getIsInjected()
 	const hasMetaMaskExtension = getIsMetaMaskWallet()
+	const hasCoinbaseExtension = getIsCoinbaseWallet()
 
-	const metaMaskWallet = hasMetaMaskExtension
-		? {
-				connector: metaMaskConnection.connector,
-				title: "MetaMask",
-				imageUrl: METAMASK_ICON_URL,
-		  }
-		: {
-				connector: metaMaskConnection.connector,
-				title: "Browser Wallet",
-				imageUrl: BROWSER_WALLET_ICON_URL,
-		  }
+	const isCoinbaseWalletBrowser = isMobile && hasCoinbaseExtension
+	const isMetaMaskBrowser = isMobile && hasMetaMaskExtension
+	const isInjectedMobileBrowser = isCoinbaseWalletBrowser || isMetaMaskBrowser
 
-	const walletList = useMemo(
-		() => [
-			{
-				connector: coinbaseWalletConnection.connector,
-				title: "Coinbase Wallet",
-				imageUrl: COINBASE_ICON_URL,
-			},
-			{
-				connector: walletConnectConnection.connector,
-				title: "WalletConnect",
-				imageUrl: WALLET_CONNECT_ICON_URL,
-			},
-		],
-		[hasMetaMaskExtension]
-	)
-
-	const displayWallet = () => {
-		return walletList.map((item) => {
-			return (
-				<AppCard
-					key={item.title}
-					bordered
-					className="bg-gray-100 !my-3 h-14 !rounded-xl !shadow-none hover:cursor-pointer hover:bg-gray-50"
-					onClick={() => {
-						tryActivation(item.connector)
-					}}
-				>
-					<Meta
-						avatar={<img src={item.imageUrl} className="w-7 h-7" />}
-						description={<div className="font-bold text-black text-base mt-1">{item.title}</div>}
-					/>
-				</AppCard>
-			)
-		})
+	let injectedOption
+	if (!isInjected) {
+		//   if (!isMobile) {
+		//     injectedOption = <InstallMetaMaskOption />
+		//   }
+	} else if (!hasCoinbaseExtension) {
+		if (hasMetaMaskExtension) {
+			injectedOption = browserWalletList[0]
+		} else {
+			injectedOption = browserWalletList[1]
+		}
 	}
+
+	let coinbaseWalletOption = browserWalletList[2]
+	// if (isMobile && !isInjectedMobileBrowser) {
+	//   coinbaseWalletOption = <OpenCoinbaseWalletOption />
+	// } else if (!isMobile || isCoinbaseWalletBrowser) {
+	//   coinbaseWalletOption = <CoinbaseWalletOption tryActivation={tryActivation} />
+	// }
+
+	// const walletConnectionOption = !isInjectedMobileBrowser ? browserWalletList[3] : undefined
+	const walletConnectionOption = (!isInjectedMobileBrowser && browserWalletList[3]) ?? null
+
+	return [injectedOption, coinbaseWalletOption, walletConnectionOption]
+}
+
+export const SelectWallet: React.FC<Props> = ({ isOpenModal, isPending, onCloseModal, tryActivation }) => {
+	// const hasMetaMaskExtension = getIsMetaMaskWallet()
+
+	// const metaMaskWallet = hasMetaMaskExtension
+	// 	? {
+	// 			connector: metaMaskConnection.connector,
+	// 			title: "MetaMask",
+	// 			imageUrl: METAMASK_ICON_URL,
+	// 	  }
+	// 	: {
+	// 			connector: metaMaskConnection.connector,
+	// 			title: "Browser Wallet",
+	// 			imageUrl: BROWSER_WALLET_ICON_URL,
+	// 	  }
+
+	// const walletList = useMemo(
+	// 	() => [
+	// 		{
+	// 			connector: coinbaseWalletConnection.connector,
+	// 			title: "Coinbase Wallet",
+	// 			imageUrl: COINBASE_ICON_URL,
+	// 		},
+	// 		{
+	// 			connector: walletConnectConnection.connector,
+	// 			title: "WalletConnect",
+	// 			imageUrl: WALLET_CONNECT_ICON_URL,
+	// 		},
+	// 	],
+	// 	[]
+	// )
+
+	const displayWallet = useMemo(() => {
+		const wallet = browserWallet()
+		if (typeof wallet !== undefined) {
+			return wallet.map((item) => {
+				if (typeof item === "undefined" || typeof item === "boolean") return null
+				return (
+					<AppCard
+						key={item.title}
+						bordered
+						className="bg-gray-100 !my-3 h-14 !rounded-xl !shadow-none hover:cursor-pointer hover:bg-gray-50"
+						onClick={() => {
+							tryActivation(item.connector)
+						}}
+					>
+						<Meta
+							avatar={<img src={item.imageUrl} className="w-7 h-7" />}
+							description={<div className="font-bold text-black text-base mt-1">{item.title}</div>}
+						/>
+					</AppCard>
+				)
+			})
+		}
+		return null
+	}, [])
+
+	// const displayWallet = () => {
+	// 	return walletList.map((item) => {
+	// 		return (
+	// 		)
+	// 	})
+	// }
 
 	return (
 		<Modal
@@ -97,7 +168,7 @@ export const SelectWallet: React.FC<Props> = ({ isOpenModal, isPending, onCloseM
 			)}
 			{!isPending && (
 				<>
-					<AppCard
+					{/* <AppCard
 						key={metaMaskWallet.title}
 						bordered
 						className="bg-gray-100 !my-3 h-14 !rounded-xl !shadow-none hover:cursor-pointer hover:bg-gray-50"
@@ -109,8 +180,8 @@ export const SelectWallet: React.FC<Props> = ({ isOpenModal, isPending, onCloseM
 							avatar={<img src={metaMaskWallet.imageUrl} className="w-7 h-7" />}
 							description={<div className="font-bold text-black text-base mt-1">{metaMaskWallet.title}</div>}
 						/>
-					</AppCard>
-					{displayWallet()}
+					</AppCard> */}
+					{displayWallet}
 					<div className="text-gray-400 text-base font-medium">
 						By connecting a wallet, you agree to Lolswap Labs’ <a href="https://uniswap.org/terms-of-service/">Terms of Service</a> and
 						consent to its <a href="https://uniswap.org/privacy-policy">Privacy Policy</a>.

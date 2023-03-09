@@ -1,5 +1,5 @@
 .account-container {
-	@apply hidden lg:flex justify-between items-center w-1/6 lg:w-5/12 h-10 p-4 mr-2 bg-transparent border-white rounded-3xl;
+	@apply flex justify-between items-center w-full md:w-6/12 2xl:w-2/5 h-10 lg:p-4 mr-2 bg-transparent border-white rounded-3xl;
 }
 
 .account-container:hover {
@@ -20,7 +20,8 @@
 }
 
 .account-modal {
-	@apply hidden;
+	@apply block absolute top-24;
+	right: 2.5%;
 }
 
 .account-modal > .ant-modal-content {
@@ -32,9 +33,14 @@
 	background: #001529 !important;
 }
 
+@media (min-width: theme("screens.md")) {
+	.account-modal {
+		right: 5%;
+	}
+}
+
 @media (min-width: theme("screens.lg")) {
 	.account-modal {
-		@apply block absolute top-24;
 		right: 7%;
 	}
 }
@@ -50,9 +56,9 @@
 		right: 2.25%;
 	}
 }
-/* 
-@media (min-width: theme("screens.2xl")) {
+
+@media (min-width: 2560px) {
 	.account-container {
-		width: 27.5%;
+		width: 33.3%;
 	}
-} */
+}
