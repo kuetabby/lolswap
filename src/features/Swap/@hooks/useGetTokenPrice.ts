@@ -101,8 +101,9 @@ export function useGet1inchTokenPrice({ fromToken, toToken, sellAmount }: Custom
 		refetchOnMount: true,
 		refetchOnReconnect: true,
 		refetchOnWindowFocus: false,
-		// refetchInterval: 5000,
-		// enabled: Boolean(toToken) && Boolean(amount),
+		retry: 3,
+		retryDelay: 2000,
+		enabled: Boolean(toToken) && Boolean(+sellAmount),
 		onError: (error) => {
 			if (axios.isAxiosError(error)) {
 				const errorAxios = error as AxiosError<{ error: string }>

@@ -54,7 +54,7 @@ export const useBalanceTokenBased = (token: BaseSwapState, isSupported: boolean)
 		if (!isSupported) {
 			setBalance("0")
 		}
-	}, [isSupported, account, token, provider])
+	}, [isSupported, account, token.id])
 
 	const checkToken = async () => {
 		const checkIsNative = await isNativeToken(provider, token.id)

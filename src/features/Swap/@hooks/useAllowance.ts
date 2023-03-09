@@ -2,33 +2,33 @@ import { useWeb3React } from "@web3-react/core"
 import { useAppDispatch } from "#/redux/store"
 import { useQuery } from "react-query"
 import axios, { AxiosError } from "axios"
+import { erc20ABI } from "wagmi"
+import { ethers } from "ethers"
 
 import { setGasPriceAmount } from "#/redux/slices/Swap"
 
-type ApiRequest = {
-	queryParams: string | string[][] | Record<string, string> | URLSearchParams | undefined
-	apiBaseUrl: string
-	methodName: string
-}
-
-type Allowance = {
-	tokenAddress: string
-	walletAddress: string | undefined
-}
-
-type AllowanceResponse = {
-	allowance: string
-}
-
-type TransactionResponse = {
-	data: string
-	gasPrice: string
-	to: string
-	value: string
-}
+import {
+	ApiRequest,
+	Allowance,
+	AllowanceResponse,
+	SpenderResponse,
+	TransactionResponse,
+	ApproveCancelled,
+	ApproveResponse,
+} from "../@models/allowance"
 
 function apiRequestUrl({ apiBaseUrl, methodName, queryParams }: ApiRequest) {
 	return apiBaseUrl + methodName + "?" + new URLSearchParams(queryParams).toString()
+}
+
+async function apiRequestApprove<T>(url: string) {
+	const requestApi = await axios.get<T>(url, {
+		headers: {
+			Accept: "application/json",
+		},
+	})
+	const responseApi = await requestApi.data
+	return responseApi
 }
 
 export const useAllowance = ({ tokenAddress, walletAddress = "" }: Allowance) => {
@@ -39,20 +39,12 @@ export const useAllowance = ({ tokenAddress, walletAddress = "" }: Allowance) =>
 		walletAddress,
 	}).toString()}`
 
-	async function checkAllowance(url: string) {
-		const requestApi = await axios.get<AllowanceResponse>(url, {
-			headers: {
-				Accept: "application/json",
-			},
-		})
-		const responseApi = await requestApi.data
-		return responseApi
-	}
-
-	const { data, isFetching, error } = useQuery([tokenAddress, walletAddress], async () => checkAllowance(apiBaseUrl), {
+	return useQuery([tokenAddress, walletAddress], async () => apiRequestApprove<AllowanceResponse>(apiBaseUrl), {
 		refetchOnMount: true,
 		refetchOnReconnect: true,
 		refetchOnWindowFocus: false,
+		retry: 3,
+		retryDelay: 2000,
 		enabled: Boolean(chainId) && Boolean(tokenAddress) && Boolean(walletAddress),
 		onError: (error) => {
 			if (axios.isAxiosError(error)) {
@@ -69,12 +61,45 @@ export const useAllowance = ({ tokenAddress, walletAddress = "" }: Allowance) =>
 				return "failed get token price"
 			}
 		},
-		onSuccess: (data) => {
-			console.log(data, "allowance")
-		},
 	})
 
-	return [data, isFetching, error] as const
+	// return [data, isFetching, error] as const
+}
+
+export const useSpenderAllowance = () => {
+	const { chainId } = useWeb3React()
+
+	const apiBaseUrl = `https://api.1inch.io/v5.0/${chainId}/approve/spender`
+
+	return useQuery(["spender target"], async () => apiRequestApprove<SpenderResponse>(apiBaseUrl), {
+		refetchOnMount: true,
+		refetchOnReconnect: true,
+		refetchOnWindowFocus: false,
+		retry: 3,
+		retryDelay: 2000,
+		enabled: Boolean(chainId),
+	})
+}
+
+export const usePermitAllowance = () => {
+	const { provider, account } = useWeb3React()
+
+	const signer = provider?.getSigner(account)
+
+	const tokenAllowance = async (address: string, amount: string, spender: string) => {
+		try {
+			const contract = new ethers.Contract(address, erc20ABI, signer)
+			const transaction = await contract.approve(spender, amount)
+			transaction.wait()
+			const response = (await transaction) as ApproveResponse
+			return { type: "success", response }
+		} catch (error) {
+			const errorCancel = error as ApproveCancelled
+			return { type: "error", errorCancel }
+		}
+	}
+
+	return [tokenAllowance]
 }
 
 export const useAllowExchange = () => {
