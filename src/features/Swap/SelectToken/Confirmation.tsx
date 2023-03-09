@@ -1,8 +1,10 @@
 import React from "react"
 import { useAppDispatch, useAppSelector } from "#/redux/store"
 import { useWeb3React } from "@web3-react/core"
-import { Card, Modal, List, Avatar, Button, Tooltip, message } from "antd"
+import { Card, Modal, List, Button, Tooltip, message } from "antd"
 import { CopyOutlined, LinkOutlined } from "@ant-design/icons"
+
+import { TokenImage } from "../@components/TokenImage"
 
 import { TokenUniswap } from "#/layouts/Navbar/@hooks/useSearchTokens"
 
@@ -66,7 +68,7 @@ export const Confirmation: React.FC<Props> = ({ closeModal, closeConfirmModal, t
 			onCancel={closeConfirmModal}
 			className="confirmation-token-modal top-20"
 			width={475}
-			title={<div className="text-white font-bold">Import a token</div>}
+			title={<div className="text-white text-center font-bold">Import a token</div>}
 			footer={null}
 		>
 			<Card
@@ -84,7 +86,10 @@ export const Confirmation: React.FC<Props> = ({ closeModal, closeConfirmModal, t
 								<List.Item.Meta
 									className="!items-baseline h-full"
 									avatar={
-										<Avatar src={item.logoURI || `https://tokens.1inch.io/${item.id}.png`} alt={item.name ?? `undefined alt-${i}`} />
+										<TokenImage
+											src={item.logoURI || `https://tokens.1inch.io/${item.id}.png`}
+											alt={item.name ?? `undefined alt-${i}`}
+										/>
 									}
 									title={
 										<div className="flex text-white w-full">

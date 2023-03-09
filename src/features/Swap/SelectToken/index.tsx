@@ -1,20 +1,22 @@
 import React, { useCallback, useMemo, useState } from "react"
 import { useAppSelector, useAppDispatch } from "#/redux/store"
-import { Modal, Input, List, Avatar } from "antd"
+import { Modal, Input, List, Button } from "antd"
+import { SearchOutlined } from "@ant-design/icons"
 import { WORKER_STATUS } from "@koale/useworker"
+
+import { TokenWarningIcon } from "./Warning"
+import { Confirmation } from "./Confirmation"
+import { TokenImage } from "../@components/TokenImage"
 
 import { toTrade, fromTrade, switchToTrade, switchFromTrade } from "#/redux/slices/Swap"
 
 import useDebounce from "#/shared/hooks/useDebounce"
+import useToggle from "#/shared/hooks/useToggle"
 import { TokenUniswap, useSearchTokenUniswap } from "#/layouts/Navbar/@hooks/useSearchTokens"
 
-import "./style.css"
-// import { useExchangeToken } from "../@hooks/useExchangeToken"
 import { checkWarning } from "#/@app/utility/Token/checkWarning"
-import { TokenWarningIcon } from "./Warning"
-import useToggle from "#/shared/hooks/useToggle"
-import { Confirmation } from "./Confirmation"
-// import { isAddress } from "#/@app/utility/Address"
+
+import "./style.css"
 
 interface Props {
 	isOpen: boolean
@@ -120,7 +122,7 @@ const SelectToken: React.FC<Props> = ({ closeModal, isOpen, type }) => {
 	)
 
 	const showWarning = useCallback(
-		(item: TokenUniswap) => {
+		(item: TokenUniswap, icon: JSX.Element) => {
 			const isNative = item?.isNative
 			if (isNative === false) {
 				const isTokenOnTheList = validatingListToken(item.id)
@@ -128,7 +130,7 @@ const SelectToken: React.FC<Props> = ({ closeModal, isOpen, type }) => {
 				if (isTokenOnTheList) {
 					return null
 				}
-				return <TokenWarningIcon warning={checkWarning(item.id)} />
+				return icon
 			}
 
 			return null
@@ -141,7 +143,7 @@ const SelectToken: React.FC<Props> = ({ closeModal, isOpen, type }) => {
 		closeModal()
 	}
 
-	console.log(dataSource, "data source")
+	// console.log(dataSource, "data source")
 
 	return (
 		<>
@@ -153,13 +155,12 @@ const SelectToken: React.FC<Props> = ({ closeModal, isOpen, type }) => {
 				title={<div className="text-white">Select a token</div>}
 				footer={null}
 			>
-				<Input.Search
-					size="large"
-					className="py-4"
+				<Input
+					className="py-2 mb-2"
+					prefix={<SearchOutlined style={{ color: "gray", fontWeight: "bold", fontSize: "1.35em", marginRight: "0.25em" }} />}
 					onChange={onChangeValue}
 					value={searchValue}
 					placeholder="Search by name or paste address"
-					enterButton
 				/>
 				<List
 					loading={isLoadingWorker || isLoadingData}
@@ -171,13 +172,19 @@ const SelectToken: React.FC<Props> = ({ closeModal, isOpen, type }) => {
 							<List.Item className="custom-list-item" onClick={() => onSelectToken(item)}>
 								<List.Item.Meta
 									className="!items-center"
-									avatar={
-										<Avatar src={item.logoURI || `https://tokens.1inch.io/${item.id}.png`} alt={item.name ?? `undefined alt-${i}`} />
-									}
+									avatar={<TokenImage src={item.logoURI || `https://tokens.1inch.io/${item.id}.png`} alt={String(i)} />}
 									title={
-										<div className="flex">
-											<div className="text-white mr-4">{item.name}</div>
-											{showWarning(item)}
+										<div className="flex justify-between">
+											<div className="flex">
+												<div className="text-white mr-4">{item.name}</div>
+												{showWarning(item, <TokenWarningIcon warning={checkWarning(item.id)} />)}
+											</div>
+											{showWarning(
+												item,
+												<Button size="small" type="primary">
+													Import
+												</Button>
+											)}
 										</div>
 									}
 									description={<div className="text-white">{item.symbol}</div>}

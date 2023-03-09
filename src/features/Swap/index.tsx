@@ -1,7 +1,6 @@
 import React, { useEffect } from "react"
 import { useWeb3React } from "@web3-react/core"
 import { useAppDispatch, useAppSelector } from "#/redux/store"
-import { Button } from "antd"
 import { ArrowDownOutlined } from "@ant-design/icons"
 
 import AppCard from "#/@app/core/AppCard"
@@ -9,15 +8,12 @@ import AppCard from "#/@app/core/AppCard"
 import BuyCard from "./Buy"
 import SellCard from "./Sell"
 import GasPrice from "./GasPrice"
-// import { CoinbaseWalletCard } from "./Connector/CoinbaseWallet"
-// import { GnosisSafeCard } from "./Connector/GnosisSafe"
-// import { MetaMaskCard } from "./Connector/Metamask"
-// import { NetworkCard } from "./Connector/Network"
-// import { WalletConnectCard } from "./Connector/WalletConnect"
+import { FooterSwapButton } from "./Footer"
 
 import { get1inchSwap, useGet1inchTokenPrice } from "#/features/Swap/@hooks/useGetTokenPrice"
-import { useAllowance } from "./@hooks/useAllowance"
+import { useAllowance, useSpenderAllowance, usePermitAllowance } from "./@hooks/useAllowance"
 import useDebounce from "#/shared/hooks/useDebounce"
+import useToggle from "#/shared/hooks/useToggle"
 
 import { resetGasPriceAmount, switchTrade } from "#/redux/slices/Swap"
 
@@ -29,8 +25,9 @@ const Swap: React.FC<Props> = () => {
 	const { from: currentSellToken, to: currentBuyToken } = useAppSelector((state) => state.swapTransaction)
 
 	const numericCurrentDecimal = +currentSellToken.decimals
-	const debounceCurrentAmount = useDebounce(currentSellToken.amount, 500)
-	const calculatedCurrentAmount = +debounceCurrentAmount * 10 ** numericCurrentDecimal
+	const currentSellAmount = +currentSellToken.amount
+	const debounceCurrentAmount = useDebounce(currentSellAmount, 500)
+	const calculatedCurrentAmount = debounceCurrentAmount * 10 ** numericCurrentDecimal
 	const stringifyCurrentAmount = calculatedCurrentAmount.toLocaleString().split(",").join("")
 
 	const { account, provider } = useWeb3React()
@@ -42,8 +39,6 @@ const Swap: React.FC<Props> = () => {
 		dispatch(resetGasPriceAmount())
 	}, [])
 
-	const [dataAllowance] = useAllowance({ tokenAddress: currentSellToken.id, walletAddress: account })
-
 	const {
 		data: data1inch,
 		isSuccess,
@@ -53,11 +48,22 @@ const Swap: React.FC<Props> = () => {
 		sellAmount: stringifyCurrentAmount || "0",
 		toToken: currentBuyToken.id,
 	})
+	const {
+		data: dataAllowance,
+		isFetching: isFetchingAllowance,
+		refetch,
+	} = useAllowance({
+		tokenAddress: currentSellToken.id,
+		walletAddress: account,
+	})
+	const { data: dataSpender, isSuccess: isSuccessGetSpender } = useSpenderAllowance()
+	const [tokenAllowance] = usePermitAllowance()
 
-	// console.log(data1inch, "1inch")
+	const [isLoadingSwap, toggleLoadingSwap, finishedLoadingSwap] = useToggle()
 
-	const onTrySwap = async () => {
+	const onSwap = async () => {
 		if (isSuccess && dataAllowance?.allowance && account) {
+			toggleLoadingSwap()
 			try {
 				const requestSwap = await get1inchSwap({
 					amount: data1inch?.fromTokenAmount,
@@ -68,38 +74,55 @@ const Swap: React.FC<Props> = () => {
 					toTokenAddress: data1inch?.toToken?.address,
 				})
 				const responseSwap = await requestSwap
-				if (typeof responseSwap !== "string" && typeof responseSwap !== "undefined") {
-					signer
-						?.sendTransaction({
-							to: responseSwap.tx.to,
-							from: responseSwap.tx.from,
-							value: responseSwap.tx.value,
-							gasLimit: responseSwap.tx.gas,
-							gasPrice: responseSwap.tx.gasPrice,
-							data: responseSwap.tx.data,
-						})
-						.then((res) => {
-							console.log(res.hash, "transaction sent")
-							return res.wait()
-						})
-						.then((res) => {
-							console.log("Transaction confirmed:", res.transactionHash)
-						})
-						.catch((err) => {
-							console.log(err, "error")
-						})
+				if (typeof responseSwap === "string" || typeof responseSwap === "undefined") {
+					return
 				}
-			} catch (error) {}
+				signer
+					?.sendTransaction({
+						to: responseSwap.tx.to,
+						from: responseSwap.tx.from,
+						value: responseSwap.tx.value,
+						gasLimit: responseSwap.tx.gas,
+						gasPrice: responseSwap.tx.gasPrice,
+						data: responseSwap.tx.data,
+					})
+					.then((res) => {
+						//message popup info sent
+						console.log(res.hash, "transaction sent")
+						return res.wait()
+					})
+					.then((res) => {
+						//message popup success confirmed
+						console.log("Transaction confirmed:", res.transactionHash)
+					})
+					.catch((err) => {
+						//message popup error error.response
+						console.log(err, "error")
+					})
+					.finally(() => {
+						finishedLoadingSwap()
+					})
+			} catch (error) {
+				finishedLoadingSwap()
+			}
 		}
 	}
 
-	// console.log(account, "account")
-	// console.log(data1inch, "data1inch")
+	const onTryAllowance = () => {
+		if (isSuccessGetSpender && isSuccess && account) {
+			tokenAllowance(data1inch?.fromToken.address, data1inch?.fromTokenAmount, dataSpender.address).then((res) => {
+				if (res.type === "success") {
+					//message popup success
+					refetch()
+				}
+			})
+		}
+	}
 
 	return (
 		<WalletConnectConfig>
 			<div className="flex flex-wrap justify-center w-full p-2 font-sans">
-				<AppCard className="!text-white sm:w-full md:w-3/5 lg:w-2/4 xl:w-1/3 2xl:w-3/12 " style={{ background: "#131823" }}>
+				<AppCard className="!text-white sm:w-full md:w-3/5 lg:w-2/4 xl:w-1/3" style={{ background: "#131823" }}>
 					<SellCard />
 					<div className="relative z-10">
 						<div className="text-center -my-4 mx-0">
@@ -114,20 +137,15 @@ const Swap: React.FC<Props> = () => {
 					</div>
 					<BuyCard data={data1inch} isFetching={isFetching} />
 					<GasPrice data={data1inch} />
-					<Button
-						onClick={onTrySwap}
-						className="w-full h-auto mt-3 rounded-xl text-base disabled:text-gray-400 disabled:bg-slate-500 disabled:border-none"
-						disabled={!account}
-						type="primary"
-					>
-						{!account ? "Connect Wallet" : "Swap"}
-					</Button>
+					<FooterSwapButton
+						isFetchingAllowance={isFetchingAllowance}
+						isLoadingSwap={isLoadingSwap}
+						sellAmount={currentSellAmount}
+						allowance={dataAllowance?.allowance}
+						onSwap={onSwap}
+						onAllowance={onTryAllowance}
+					/>
 				</AppCard>
-				{/* <MetaMaskCard />
-				<WalletConnectCard />
-				<CoinbaseWalletCard />
-				<NetworkCard />
-				<GnosisSafeCard /> */}
 			</div>
 		</WalletConnectConfig>
 	)

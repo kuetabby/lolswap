@@ -1,15 +1,20 @@
 import React from "react"
+import { useWeb3React } from "@web3-react/core"
 import { useAppSelector } from "#/redux/store"
 import { Card, Spin } from "antd"
 import { DownOutlined } from "@ant-design/icons"
 
 import SelectToken from "../SelectToken"
+import { TokenImage } from "../@components/TokenImage"
 
 import useToggle from "#/shared/hooks/useToggle"
+import { useBalanceTokenBased } from "../@hooks/useBalances"
 
-import "./style.css"
+import { getChainInfo } from "#/shared/constants/chainInfo"
 
 import { Swap1inchPrice } from "#/redux/@models/Swap"
+
+import "./style.css"
 
 interface Props {
 	data?: Swap1inchPrice
@@ -17,9 +22,16 @@ interface Props {
 }
 
 const BuyCard: React.FC<Props> = ({ data, isFetching }) => {
+	const { chainId } = useWeb3React()
+
 	const currentTrade = useAppSelector((state) => state.swapTransaction.to)
 
+	const info = chainId ? getChainInfo(chainId) : undefined
+	const isSupported = !!info
+
 	const [isSearchToken, toggleSearchToken] = useToggle()
+
+	const [balance, isLoadingBalance] = useBalanceTokenBased(currentTrade, isSupported)
 
 	return (
 		<>
@@ -29,16 +41,22 @@ const BuyCard: React.FC<Props> = ({ data, isFetching }) => {
 				style={{ background: "transparent", boxShadow: "inset 0 0 0 1px #202835" }}
 			>
 				<div className="buy-container">
-					<p className="buy-text-info">You Buy</p>
+					<div className="w-full flex justify-between">
+						<p className="buy-text-info">You Buy</p>
+						<div className="flex justify-between h-4" style={{ minWidth: "22.5%", maxWidth: "33.33%" }}>
+							{isLoadingBalance && <Spin className="mx-1" />}
+							{!isLoadingBalance && <div className="font-semibold text-right w-36 mr-1">Balance: {isSupported ? balance : 0}</div>}
+							{/* <div className="text-blue-500 cursor-pointer hover:bg-blue-400 hover:text-white px-1">MAX</div> */}
+						</div>
+					</div>
 					<div className="buy-container-token">
 						<div className="buy-wrapper-token" onClick={toggleSearchToken}>
 							{!currentTrade.id && <div className="buy-select-token">Select Token</div>}
 							{currentTrade.id && (
 								<>
-									<img
-										src={data?.toToken.logoURI || `https://tokens.1inch.io/${currentTrade.id}.png`}
+									<TokenImage
+										src={data?.toToken.logoURI || currentTrade.logoURI || `https://tokens.1inch.io/${currentTrade.id}.png`}
 										alt={currentTrade.id}
-										className="!h-6 !w-6"
 									/>
 									<span className="buy-name-token">{currentTrade.symbol}</span>
 								</>
