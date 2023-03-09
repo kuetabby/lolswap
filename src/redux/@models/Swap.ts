@@ -9,6 +9,8 @@ export interface SwapState {
 	from: BaseSwapState
 	requirement: {
 		gasPrice: string
+		tokenBalance: string
+		tokenAmount: string
 	}
 }
 

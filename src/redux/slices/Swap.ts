@@ -23,6 +23,8 @@ const initialState: SwapState = {
 	to: initialToState,
 	requirement: {
 		gasPrice: "0",
+		tokenAmount: "",
+		tokenBalance: "",
 	},
 }
 
@@ -37,12 +39,13 @@ export const swapSlice = createSlice({
 		// 	}
 		// },
 		setGasPriceAmount: (state, action: PayloadAction<string>) => {
-			return {
-				...state,
-				requirement: {
-					gasPrice: action.payload,
-				},
-			}
+			state.requirement.gasPrice = action.payload
+		},
+		setTokenAmount: (state, action: PayloadAction<string>) => {
+			state.requirement.tokenAmount = action.payload
+		},
+		setTokenBalance: (state, action: PayloadAction<string>) => {
+			state.requirement.tokenBalance = action.payload
 		},
 		// setTrade: (state, action: PayloadAction<{ to: BaseSwapState; from: BaseSwapState; gasPrice?: string }>) => {
 		// 	return {
@@ -133,5 +136,7 @@ export const {
 	switchToTrade,
 	switchTrade,
 	setGasPriceAmount,
+	setTokenAmount,
+	setTokenBalance,
 	resetGasPriceAmount,
 } = swapSlice.actions
