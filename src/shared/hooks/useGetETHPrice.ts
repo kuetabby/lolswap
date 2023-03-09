@@ -27,7 +27,7 @@ export const useGetETHPrice = ({ gasPrice, gasLimit }: Props) => {
 		refetchOnMount: true,
 		refetchOnReconnect: true,
 		refetchOnWindowFocus: false,
-		enabled: Boolean(gasLimit) && Boolean(gasPrice),
+		enabled: Boolean(gasLimit) && Boolean(+gasPrice),
 		onError: () => {
 			setGasCost(0)
 		},
