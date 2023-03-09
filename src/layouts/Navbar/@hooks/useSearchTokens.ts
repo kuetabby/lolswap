@@ -7,7 +7,7 @@ import axios from "axios"
 import { useWorker } from "@koale/useworker"
 
 import useToggle from "#/shared/hooks/useToggle"
-import { useGetToken } from "#/shared/hooks/useGetContract"
+import { useGetToken } from "#/shared/hooks/useGetToken"
 
 import { isAddress } from "#/@app/utility/Address"
 
