@@ -15,7 +15,7 @@ const wagmiClient = createClient({
 	autoConnect: true,
 	connectors: modalConnectors({
 		projectId: clientId,
-		version: "1", // or "2"
+		version: "2", // or "2"
 		appName: "web3Modal",
 		chains,
 	}),
@@ -34,9 +34,10 @@ export const WalletConnectConfig: React.FC<Props> = ({ children }) => {
 			<Web3Modal
 				projectId={clientId}
 				ethereumClient={ethereumClient}
-				themeMode="dark"
-				themeColor="blackWhite"
 				themeBackground="themeColor"
+				themeColor="blue"
+				themeMode="dark"
+				themeZIndex={9999}
 			/>
 		</>
 	)
