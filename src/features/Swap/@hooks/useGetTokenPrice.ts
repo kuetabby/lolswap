@@ -101,6 +101,7 @@ export function useGet1inchTokenPrice({ fromToken, toToken, sellAmount }: Custom
 		refetchOnMount: true,
 		refetchOnReconnect: true,
 		refetchOnWindowFocus: false,
+		refetchInterval: 10000,
 		retry: 3,
 		retryDelay: 2000,
 		enabled: Boolean(toToken) && Boolean(+sellAmount),

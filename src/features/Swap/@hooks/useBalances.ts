@@ -47,7 +47,7 @@ export const useBalanceTokenBased = (token: BaseSwapState, isSupported: boolean)
 	const [isLoading, toggleLoading] = useToggle()
 
 	useEffect(() => {
-		if (isSupported) {
+		if (isSupported && account) {
 			checkToken()
 		}
 

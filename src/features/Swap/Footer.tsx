@@ -1,11 +1,14 @@
 import React from "react"
+import { useAppSelector } from "#/redux/store"
 import { useWeb3React } from "@web3-react/core"
 import { Button } from "antd"
-import { useAppSelector } from "#/redux/store"
+
+import type { Swap1inchPrice } from "#/redux/@models/Swap"
 
 interface Props {
 	allowance?: string
 	sellAmount: number
+	data?: Swap1inchPrice
 	isLoadingSwap: boolean
 	isFetchingAllowance: boolean
 	onSwap: () => Promise<void>
@@ -17,6 +20,7 @@ const className = "w-full h-auto mt-3 rounded-xl text-base disabled:text-gray-40
 export const FooterSwapButton: React.FC<Props> = ({
 	sellAmount,
 	allowance,
+	data,
 	isFetchingAllowance,
 	isLoadingSwap,
 	onSwap,
@@ -32,17 +36,25 @@ export const FooterSwapButton: React.FC<Props> = ({
 	if (allowance !== "0") {
 		const swapValidation = !account || isCurrentSellAmountEmpty
 
-		if (!isAmountExceedBalance) {
+		if (!data?.fromToken.address || !data?.toToken.address) {
 			return (
-				<Button onClick={onSwap} className={className} disabled={swapValidation} type="primary" loading={isLoadingSwap}>
-					{!account ? "Connect Wallet" : "Swap"}
+				<Button className={className} type="primary" disabled>
+					Select Token
+				</Button>
+			)
+		}
+
+		if (isAmountExceedBalance) {
+			return (
+				<Button className={className} type="primary" disabled>
+					Insufficient Balance
 				</Button>
 			)
 		}
 
 		return (
-			<Button className={className} type="primary" disabled>
-				Insufficient Balance
+			<Button onClick={onSwap} className={className} disabled={swapValidation} type="primary" loading={isLoadingSwap}>
+				{!account ? "Connect Wallet" : "Swap"}
 			</Button>
 		)
 	} else if (allowance === "0") {

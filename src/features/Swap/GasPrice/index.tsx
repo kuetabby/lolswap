@@ -13,6 +13,7 @@ interface Props {
 
 const GasPrice: React.FC<Props> = ({ data }) => {
 	const { gasPrice } = useAppSelector((state) => state.swapTransaction.requirement)
+
 	const gasLimit = data?.estimatedGas || 0
 
 	const [gasCost] = useGetETHPrice({ gasPrice, gasLimit })
