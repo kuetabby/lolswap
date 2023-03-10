@@ -3,12 +3,9 @@ import { useAppSelector } from "#/redux/store"
 import { useWeb3React } from "@web3-react/core"
 import { Button } from "antd"
 
-import type { Swap1inchPrice } from "#/redux/@models/Swap"
-
 interface Props {
 	allowance?: string
 	sellAmount: number
-	data?: Swap1inchPrice
 	isLoadingSwap: boolean
 	isFetchingAllowance: boolean
 	onSwap: () => Promise<void>

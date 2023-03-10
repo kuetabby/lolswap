@@ -142,7 +142,6 @@ const Swap: React.FC<Props> = () => {
 						isLoadingSwap={isLoadingSwap}
 						sellAmount={currentSellAmount}
 						allowance={dataAllowance?.allowance}
-						data={data1inch}
 						onSwap={onSwap}
 						onAllowance={onTryAllowance}
 					/>
