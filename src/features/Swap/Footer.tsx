@@ -20,13 +20,16 @@ const className = "w-full h-auto mt-3 rounded-xl text-base disabled:text-gray-40
 export const FooterSwapButton: React.FC<Props> = ({
 	sellAmount,
 	allowance,
-	data,
 	isFetchingAllowance,
 	isLoadingSwap,
 	onSwap,
 	onAllowance,
 }) => {
-	const { tokenBalance } = useAppSelector((state) => state.swapTransaction.requirement)
+	const { requirement, from: fromToken, to: toToken } = useAppSelector((state) => state.swapTransaction)
+
+	const { tokenBalance } = requirement
+	const { id: fromId, amount: fromAmount } = fromToken
+	const { id: toId } = toToken
 
 	const { account } = useWeb3React()
 
@@ -34,27 +37,32 @@ export const FooterSwapButton: React.FC<Props> = ({
 	const isAmountExceedBalance = sellAmount > +tokenBalance
 
 	if (allowance !== "0") {
-		const swapValidation = !account || isCurrentSellAmountEmpty
-
-		if (!data?.fromToken.address || !data?.toToken.address) {
-			return (
-				<Button className={className} type="primary" disabled>
-					Select Token
-				</Button>
-			)
-		}
-
-		if (isAmountExceedBalance) {
-			return (
-				<Button className={className} type="primary" disabled>
-					Insufficient Balance
-				</Button>
-			)
+		if (account) {
+			if (!fromId || !toId) {
+				return (
+					<Button className={className} type="primary" disabled>
+						Select Token
+					</Button>
+				)
+			} else if (isAmountExceedBalance || !Boolean(+fromAmount)) {
+				return (
+					<Button className={className} type="primary" disabled>
+						{!Boolean(+fromAmount) && "Input Amount of Token"}
+						{isAmountExceedBalance && "Insufficient Balance"}
+					</Button>
+				)
+			} else {
+				return (
+					<Button onClick={onSwap} className={className} disabled={isCurrentSellAmountEmpty} type="primary" loading={isLoadingSwap}>
+						Swap
+					</Button>
+				)
+			}
 		}
 
 		return (
-			<Button onClick={onSwap} className={className} disabled={swapValidation} type="primary" loading={isLoadingSwap}>
-				{!account ? "Connect Wallet" : "Swap"}
+			<Button disabled className={className} type="primary" loading={isLoadingSwap}>
+				Connect Wallet
 			</Button>
 		)
 	} else if (allowance === "0") {
@@ -66,7 +74,7 @@ export const FooterSwapButton: React.FC<Props> = ({
 	} else {
 		return (
 			<Button className={className} type="primary" loading={isFetchingAllowance}>
-				???
+				Condition isn't match
 			</Button>
 		)
 	}
