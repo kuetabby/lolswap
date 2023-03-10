@@ -1,8 +1,7 @@
-import React, { useCallback, useMemo, useState } from "react"
+import React, { useCallback, useState } from "react"
 import { useAppSelector, useAppDispatch } from "#/redux/store"
 import { Modal, Input, List, Button } from "antd"
 import { SearchOutlined } from "@ant-design/icons"
-import { WORKER_STATUS } from "@koale/useworker"
 
 import { TokenWarningIcon } from "./Warning"
 import { Confirmation } from "./Confirmation"
@@ -12,9 +11,11 @@ import { toTrade, fromTrade, switchToTrade, switchFromTrade } from "#/redux/slic
 
 import useDebounce from "#/shared/hooks/useDebounce"
 import useToggle from "#/shared/hooks/useToggle"
-import { TokenUniswap, useSearchTokenUniswap } from "#/layouts/Navbar/@hooks/useSearchTokens"
+import { useSearchTokens } from "#/shared/hooks/useSearchTokens"
 
 import { checkWarning } from "#/@app/utility/Token/checkWarning"
+
+import type { TokenUniswap } from "#/layouts/Navbar/@hooks/useSearchTokens"
 
 import "./style.css"
 
@@ -41,7 +42,9 @@ const SelectToken: React.FC<Props> = ({ closeModal, isOpen, type }) => {
 	const { from: currentTrade, to: destinationTrade } = useAppSelector((state) => state.swapTransaction)
 
 	const debouncedValue = useDebounce(searchValue, 1000)
-	const [data, isLoadingData, workerStatus, validatingListToken] = useSearchTokenUniswap(debouncedValue)
+
+	const [data, isLoadingData, validatingListToken] = useSearchTokens(debouncedValue)
+
 	const [isOpenConfirmation, toggleConfirmation, closeConfirmation] = useToggle()
 	// const { mutate } = useExchangeToken()
 
@@ -54,7 +57,6 @@ const SelectToken: React.FC<Props> = ({ closeModal, isOpen, type }) => {
 	const onSelectToken = (item: TokenUniswap) => {
 		const trade = { ...item, amount: "0" }
 		const isShowModalConfirmation = showConfirmationModal(item)
-		// console.log("should we show the modal confirmation ?", isShowModalConfirmation)
 		if (!isShowModalConfirmation) {
 			if (type === "Buy") {
 				// mutate(item)
@@ -79,36 +81,11 @@ const SelectToken: React.FC<Props> = ({ closeModal, isOpen, type }) => {
 		item && setConfirmationToken(item)
 	}
 
-	const dataSource = useMemo(() => {
-		switch (workerStatus) {
-			case WORKER_STATUS.SUCCESS:
-				return data
-			default:
-				return []
-		}
-	}, [workerStatus, data])
-
-	const isLoadingWorker = useMemo(() => {
-		switch (workerStatus) {
-			case WORKER_STATUS.SUCCESS:
-				return false
-			case WORKER_STATUS.ERROR:
-				return false
-			case WORKER_STATUS.TIMEOUT_EXPIRED:
-				return false
-			default:
-				return true
-		}
-	}, [workerStatus])
-
 	const showConfirmationModal = useCallback(
 		(item: TokenUniswap) => {
 			const isNative = item?.isNative
-			// const isToken = item?.isToken
-
 			if (isNative === false) {
 				const isTokenOnTheList = validatingListToken(item.id)
-				// console.log(isTokenOnTheList, "is token on the list")
 				if (isTokenOnTheList) {
 					return false
 				}
@@ -126,7 +103,6 @@ const SelectToken: React.FC<Props> = ({ closeModal, isOpen, type }) => {
 			const isNative = item?.isNative
 			if (isNative === false) {
 				const isTokenOnTheList = validatingListToken(item.id)
-				// console.log(isTokenOnTheList, "is token on the list")
 				if (isTokenOnTheList) {
 					return null
 				}
@@ -135,7 +111,7 @@ const SelectToken: React.FC<Props> = ({ closeModal, isOpen, type }) => {
 
 			return null
 		},
-		[dataSource, checkWarning, validatingListToken]
+		[data, checkWarning, validatingListToken]
 	)
 
 	const onCloseConfirmation = () => {
@@ -163,8 +139,8 @@ const SelectToken: React.FC<Props> = ({ closeModal, isOpen, type }) => {
 					placeholder="Search by name or paste address"
 				/>
 				<List
-					loading={isLoadingWorker || isLoadingData}
-					dataSource={dataSource as TokenUniswap[]}
+					loading={isLoadingData}
+					dataSource={data as TokenUniswap[]}
 					className="custom-list-container"
 					style={{ maxHeight: "350px", overflow: "auto" }}
 					renderItem={(item: TokenUniswap, i) => {
