@@ -15,7 +15,7 @@ import ethereumLogoUrl from "#/assets/ethereum-logo.png"
 
 // const INFURA_KEY = import.meta.env.VITE_INFURA_KEY
 
-type BaseToken = {
+export type BaseToken = {
 	id: string
 	decimals: string
 	name?: string
@@ -52,7 +52,7 @@ export const SearchTokensDocument = gql`
 const endpoint = "https://wispy-bird-88a7.uniswap.workers.dev/?url=http://tokens.1inch.eth.link"
 const client = "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3"
 
-const defaultTokens = [
+export const defaultTokens = [
 	{
 		id: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
 		decimals: "18",
@@ -104,10 +104,10 @@ const useSearchTokensQuery = () => {
 	)
 }
 
-const useSearchUniswapTokenQuery = () => {
+export const useSearchUniswapTokenQuery = () => {
 	return useMutation(
 		async ({ name }: { name: string }) => {
-			const request = await axios({
+			const request = await axios<{ data: { tokens: TokenUniswap[] } }>({
 				method: "POST",
 				url: client,
 				data: JSON.stringify({
@@ -130,7 +130,6 @@ const useSearchUniswapTokenQuery = () => {
 			return tokens
 		},
 		{
-			retry: 3,
 			retryDelay: 1000,
 		}
 	)
