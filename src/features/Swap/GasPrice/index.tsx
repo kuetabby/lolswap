@@ -16,7 +16,7 @@ const GasPrice: React.FC<Props> = ({ data }) => {
 
 	const gasLimit = data?.estimatedGas || 0
 
-	const [gasCost] = useGetETHPrice({ gasPrice, gasLimit })
+	const [gasCost, isFetching] = useGetETHPrice({ gasPrice, gasLimit })
 
 	return (
 		<Card
@@ -28,9 +28,12 @@ const GasPrice: React.FC<Props> = ({ data }) => {
 				<div className="w-1/3 flex">
 					<img src="https://app.1inch.io/assets/images/gasless/regular-night_2-1.png" className="w-5 h-5" alt="gas-icon" />
 					<div className="w-2/4 ml-1 flex items-center">
-						<span className="text-sm font-semibold" style={{ color: "#6C86AD" }}>
-							$ {gasCost.toFixed(2) || 0}
-						</span>
+						{isFetching && <div className="w-full h-3 animate-pulse bg-slate-700 rounded" />}
+						{!isFetching && (
+							<span className="text-sm font-semibold" style={{ color: "#6C86AD" }}>
+								$ {gasCost.toFixed(2) || 0}
+							</span>
+						)}
 						{/* <DownOutlined style={{ marginTop: "0.25em", marginLeft: "0.5em", color: "white" }} /> */}
 					</div>
 				</div>

@@ -23,7 +23,7 @@ export const useGetETHPrice = ({ gasPrice, gasLimit }: Props) => {
 		}
 	}, [gasLimit])
 
-	useQuery([gasPrice, gasLimit], getEthPrice, {
+	const { isFetching } = useQuery([gasPrice, gasLimit], getEthPrice, {
 		refetchOnMount: true,
 		refetchOnReconnect: true,
 		refetchOnWindowFocus: false,
@@ -53,5 +53,5 @@ export const useGetETHPrice = ({ gasPrice, gasLimit }: Props) => {
 		setGasCost(gasCostInUsd)
 	}
 
-	return [gasCost]
+	return [gasCost, isFetching] as const
 }
