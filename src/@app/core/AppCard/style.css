@@ -33,8 +33,9 @@
 }
 
 .card > .ant-card-body {
-	padding: 1.5em 2em;
+	padding: 1.5em 2em !important;
 }
+
 .card-outer-title {
 	font-size: 20em;
 	margin-bottom: 16px;
@@ -49,4 +50,10 @@
 .no-card-space-ltr-rtl > .ant-card-body {
 	padding-left: 0;
 	padding-right: 0;
+}
+
+@media (max-width: theme("screens.md")) {
+	.card > .ant-card-body {
+		@apply p-4;
+	}
 }
