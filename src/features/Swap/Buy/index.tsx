@@ -4,7 +4,7 @@ import { useAppSelector } from "#/redux/store"
 import { Card, Spin } from "antd"
 import { DownOutlined } from "@ant-design/icons"
 
-import SelectToken from "../SelectToken"
+import SelectToken from "../@components/SelectToken"
 import { TokenImage } from "../@components/TokenImage"
 
 import useToggle from "#/shared/hooks/useToggle"
