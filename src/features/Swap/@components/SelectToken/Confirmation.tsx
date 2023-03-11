@@ -1,34 +1,23 @@
 import React from "react"
-import { useAppDispatch, useAppSelector } from "#/redux/store"
-import { useWeb3React } from "@web3-react/core"
 import { Card, Modal, List, Button, Tooltip, message } from "antd"
 import { CopyOutlined, LinkOutlined } from "@ant-design/icons"
 
-import { TokenImage } from "../@components/TokenImage"
+import { TokenImage } from "../TokenImage"
 
 import { TokenUniswap } from "#/layouts/Navbar/@hooks/useSearchTokens"
 
 import { shortenAddress } from "#/@app/utility/Address"
-
-import { fromTrade, switchFromTrade, switchToTrade, toTrade } from "#/redux/slices/Swap"
-import { addSerializedToken } from "#/redux/slices/User"
 
 import "./style.css"
 
 interface Props {
 	isOpen: boolean
 	token: TokenUniswap
-	type: "Sell" | "Buy"
+	onImportToken: (token: TokenUniswap) => void
 	closeConfirmModal: () => void
-	closeModal: () => void
 }
 
-export const Confirmation: React.FC<Props> = ({ closeModal, closeConfirmModal, type, isOpen, token }) => {
-	const { from: currentTrade, to: destinationTrade } = useAppSelector((state) => state.swapTransaction)
-
-	const { chainId } = useWeb3React()
-	const dispatch = useAppDispatch()
-
+export const Confirmation: React.FC<Props> = ({ closeConfirmModal, onImportToken, isOpen, token }) => {
 	const copyContent = async (address: string) => {
 		try {
 			await navigator.clipboard.writeText(address)
@@ -37,28 +26,6 @@ export const Confirmation: React.FC<Props> = ({ closeModal, closeConfirmModal, t
 		} catch (err) {
 			console.error("Failed to copy: ", err)
 			/* Rejected - text failed to copy to the clipboard */
-		}
-	}
-
-	const onImportToken = () => {
-		const trade = { ...token, amount: "0" }
-		chainId && dispatch(addSerializedToken({ serializedToken: { ...trade, chainId } }))
-		if (type === "Buy") {
-			if (currentTrade.id === token.id) {
-				dispatch(switchToTrade(trade))
-				closeModal()
-			} else {
-				dispatch(toTrade(trade))
-				closeModal()
-			}
-		} else {
-			if (destinationTrade.id === token.id) {
-				dispatch(switchFromTrade(trade))
-				closeModal()
-			} else {
-				dispatch(fromTrade(trade))
-				closeModal()
-			}
 		}
 	}
 
@@ -135,7 +102,7 @@ export const Confirmation: React.FC<Props> = ({ closeModal, closeConfirmModal, t
 					<div className="mt-4">If you purchase this token, you may not be able to sell it back</div>
 				</div>
 			</Card>
-			<Button className="w-full mt-6 !rounded-xl" onClick={onImportToken} type="primary">
+			<Button className="w-full mt-6 !rounded-xl" onClick={() => onImportToken(token)} type="primary">
 				Import
 			</Button>
 		</Modal>

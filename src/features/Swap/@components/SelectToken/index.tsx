@@ -1,13 +1,15 @@
 import React, { useCallback, useState } from "react"
+import { useWeb3React } from "@web3-react/core"
 import { useAppSelector, useAppDispatch } from "#/redux/store"
 import { Modal, Input, List, Button } from "antd"
 import { SearchOutlined } from "@ant-design/icons"
 
 import { TokenWarningIcon } from "./Warning"
 import { Confirmation } from "./Confirmation"
-import { TokenImage } from "../@components/TokenImage"
+import { TokenImage } from "../TokenImage"
 
 import { toTrade, fromTrade, switchToTrade, switchFromTrade } from "#/redux/slices/Swap"
+import { addSerializedToken } from "#/redux/slices/User"
 
 import useDebounce from "#/shared/hooks/useDebounce"
 import useToggle from "#/shared/hooks/useToggle"
@@ -49,36 +51,46 @@ const SelectToken: React.FC<Props> = ({ closeModal, isOpen, type }) => {
 	// const { mutate } = useExchangeToken()
 
 	const dispatch = useAppDispatch()
+	const { chainId } = useWeb3React()
 
 	const onChangeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setSearchValue(e.target.value)
+	}
+
+	const onConfirm = (item: { amount: string } & TokenUniswap, onClose: () => void) => {
+		if (type === "Buy") {
+			if (currentTrade.id === item.id) {
+				dispatch(switchToTrade(item))
+				onClose()
+			} else {
+				dispatch(toTrade(item))
+				onClose()
+			}
+		} else {
+			if (destinationTrade.id === item.id) {
+				dispatch(switchFromTrade(item))
+				onClose()
+			} else {
+				dispatch(fromTrade(item))
+				onClose()
+			}
+		}
 	}
 
 	const onSelectToken = (item: TokenUniswap) => {
 		const trade = { ...item, amount: "0" }
 		const isShowModalConfirmation = showConfirmationModal(item)
 		if (!isShowModalConfirmation) {
-			if (type === "Buy") {
-				// mutate(item)
-				if (currentTrade.id === item.id) {
-					dispatch(switchToTrade(trade))
-					closeModal()
-				} else {
-					dispatch(toTrade(trade))
-					closeModal()
-				}
-			} else {
-				if (destinationTrade.id === item.id) {
-					dispatch(switchFromTrade(trade))
-					closeModal()
-				} else {
-					dispatch(fromTrade(trade))
-					closeModal()
-				}
-			}
+			onConfirm(trade, closeModal)
 		}
-		toggleConfirmation()
 		item && setConfirmationToken(item)
+		toggleConfirmation()
+	}
+
+	const onImportToken = (item: TokenUniswap) => {
+		const trade = { ...item, amount: "0" }
+		chainId && dispatch(addSerializedToken({ serializedToken: { ...trade, chainId } }))
+		onConfirm(trade, onCloseConfirmation)
 	}
 
 	const showConfirmationModal = useCallback(
@@ -128,7 +140,7 @@ const SelectToken: React.FC<Props> = ({ closeModal, isOpen, type }) => {
 				onCancel={closeModal}
 				className="search-token-modal top-20"
 				width={450}
-				title={<div className="text-white">Select a token</div>}
+				title={<div className="text-white text-center font-semibold mb-4">Select a token</div>}
 				footer={null}
 			>
 				<Input
@@ -174,8 +186,7 @@ const SelectToken: React.FC<Props> = ({ closeModal, isOpen, type }) => {
 				<Confirmation
 					isOpen={isOpenConfirmation}
 					token={confirmationToken}
-					type={type}
-					closeModal={onCloseConfirmation}
+					onImportToken={onImportToken}
 					closeConfirmModal={closeConfirmation}
 				/>
 			)}
