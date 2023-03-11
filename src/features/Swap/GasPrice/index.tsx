@@ -25,7 +25,7 @@ const GasPrice: React.FC<Props> = ({ data }) => {
 			style={{ background: "#06070A", boxShadow: "inset 0 0 0 1px #202835" }}
 		>
 			<Tooltip placement="topLeft" title="Estimated Gas">
-				<div className="w-1/3 flex">
+				<div className="w-full sm:w-1/3 flex">
 					<img src="https://app.1inch.io/assets/images/gasless/regular-night_2-1.png" className="w-5 h-5" alt="gas-icon" />
 					<div className="w-2/4 ml-1 flex items-center">
 						{isFetching && <div className="w-full h-3 animate-pulse bg-slate-700 rounded" />}
