@@ -2,12 +2,17 @@ import React from "react"
 import { useAppSelector } from "#/redux/store"
 import { useWeb3React } from "@web3-react/core"
 import { Button } from "antd"
+import { AxiosError } from "axios"
 
+import { ErrorResponse } from "./@hooks/useGetTokenPrice"
 interface Props {
 	allowance?: string
 	sellAmount: number
+	errorPrice: AxiosError<ErrorResponse, any> | null
 	isLoadingSwap: boolean
 	isFetchingAllowance: boolean
+	isFetchingPrice: boolean
+	isErrorPrice: boolean
 	onSwap: () => Promise<void>
 	onAllowance: () => void
 }
@@ -17,8 +22,11 @@ const className = "w-full h-auto mt-3 rounded-xl text-base disabled:text-gray-40
 export const FooterSwapButton: React.FC<Props> = ({
 	sellAmount,
 	allowance,
+	errorPrice,
+	isFetchingPrice,
 	isFetchingAllowance,
 	isLoadingSwap,
+	isErrorPrice,
 	onSwap,
 	onAllowance,
 }) => {
@@ -48,9 +56,21 @@ export const FooterSwapButton: React.FC<Props> = ({
 						{isAmountExceedBalance && "Insufficient Balance"}
 					</Button>
 				)
+			} else if (isErrorPrice) {
+				return (
+					<Button className={className} type="primary" disabled>
+						{errorPrice?.response?.data?.description || errorPrice?.message}
+					</Button>
+				)
 			} else {
 				return (
-					<Button onClick={onSwap} className={className} disabled={isCurrentSellAmountEmpty} type="primary" loading={isLoadingSwap}>
+					<Button
+						onClick={onSwap}
+						className={className}
+						disabled={isCurrentSellAmountEmpty || isFetchingPrice}
+						type="primary"
+						loading={isLoadingSwap}
+					>
 						Swap
 					</Button>
 				)
