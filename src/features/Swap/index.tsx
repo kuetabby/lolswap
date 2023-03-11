@@ -8,6 +8,7 @@ import AppCard from "#/@app/core/AppCard"
 import BuyCard from "./Buy"
 import SellCard from "./Sell"
 import GasPrice from "./GasPrice"
+import HeaderSwapButton from "./Header"
 import { FooterSwapButton } from "./Footer"
 
 import { get1inchSwap, useGet1inchTokenPrice } from "#/features/Swap/@hooks/useGetTokenPrice"
@@ -41,8 +42,11 @@ const Swap: React.FC<Props> = () => {
 
 	const {
 		data: data1inch,
-		isSuccess,
-		isFetching,
+		error: errorPrice,
+		refetch: refetchPrice,
+		isSuccess: isSuccessPrice,
+		isFetching: isFetchingPrice,
+		isError: isErrorPrice,
 	} = useGet1inchTokenPrice({
 		fromToken: currentSellToken.id,
 		sellAmount: stringifyCurrentAmount || "0",
@@ -51,7 +55,7 @@ const Swap: React.FC<Props> = () => {
 	const {
 		data: dataAllowance,
 		isFetching: isFetchingAllowance,
-		refetch,
+		refetch: refetchAllowance,
 	} = useAllowance({
 		tokenAddress: currentSellToken.id,
 		walletAddress: account,
@@ -62,7 +66,7 @@ const Swap: React.FC<Props> = () => {
 	const [isLoadingSwap, toggleLoadingSwap, finishedLoadingSwap] = useToggle()
 
 	const onSwap = async () => {
-		if (isSuccess && dataAllowance?.allowance && account) {
+		if (isSuccessPrice && dataAllowance?.allowance && account) {
 			toggleLoadingSwap()
 			try {
 				const requestSwap = await get1inchSwap({
@@ -109,11 +113,11 @@ const Swap: React.FC<Props> = () => {
 	}
 
 	const onTryAllowance = () => {
-		if (isSuccessGetSpender && isSuccess && account) {
+		if (isSuccessGetSpender && isSuccessPrice && account) {
 			tokenAllowance(data1inch?.fromToken.address, data1inch?.fromTokenAmount, dataSpender.address).then((res) => {
 				if (res.type === "success") {
 					//message popup success
-					refetch()
+					refetchAllowance()
 				}
 			})
 		}
@@ -122,7 +126,8 @@ const Swap: React.FC<Props> = () => {
 	return (
 		<WalletConnectConfig>
 			<div className="flex flex-wrap justify-center w-full p-2 font-sans">
-				<AppCard className="!text-white sm:w-full md:w-3/5 lg:w-2/4 xl:w-1/3" style={{ background: "#131823" }}>
+				<AppCard className="!text-white sm:w-full md:w-2/4 lg:w-2/5 xl:w-1/3" style={{ background: "#131823" }}>
+					<HeaderSwapButton isSuccessPrice={isSuccessPrice} isFetchingPrice={isFetchingPrice} refetchPrice={refetchPrice} />
 					<SellCard />
 					<div className="relative z-10">
 						<div className="text-center -my-4 mx-0">
@@ -135,13 +140,16 @@ const Swap: React.FC<Props> = () => {
 							</div>
 						</div>
 					</div>
-					<BuyCard data={data1inch} isFetching={isFetching} />
+					<BuyCard data={data1inch} isFetching={isFetchingPrice} />
 					<GasPrice data={data1inch} />
 					<FooterSwapButton
 						isFetchingAllowance={isFetchingAllowance}
+						isFetchingPrice={isFetchingPrice}
 						isLoadingSwap={isLoadingSwap}
+						isErrorPrice={isErrorPrice}
 						sellAmount={currentSellAmount}
 						allowance={dataAllowance?.allowance}
+						errorPrice={errorPrice}
 						onSwap={onSwap}
 						onAllowance={onTryAllowance}
 					/>
