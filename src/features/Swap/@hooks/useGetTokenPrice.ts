@@ -1,6 +1,7 @@
 import { useQuery } from "react-query"
-import { useAppDispatch } from "#/redux/store"
 import axios, { AxiosError } from "axios"
+import { message } from "antd"
+import { useAppDispatch } from "#/redux/store"
 
 import { setBuyTradeAmount } from "#/redux/slices/Swap"
 
@@ -55,6 +56,17 @@ type Swap1inchResponse = {
 	}
 }
 
+export type ErrorResponse = {
+	statusCode: number
+	error: string
+	description: string
+	meta: {
+		type: string
+		value: string
+	}[]
+	requestId: string
+}
+
 const get1inchPrice = async (url: string) => {
 	const request = await axios.get<Swap1inchPrice>(url, {
 		headers: {
@@ -69,20 +81,16 @@ export const get1inchSwap = async (params: Swap1inchParams) => {
 	try {
 		const request = await axios.get<Swap1inchResponse>(`https://api.1inch.io/v5.0/1/swap?${new URLSearchParams(params).toString()}`)
 		const response = await request.data
-		console.log(response, "get swap 1inch")
 		return response
 	} catch (error) {
 		if (axios.isAxiosError(error)) {
-			const errorAxios = error as AxiosError<{ error: string }>
+			const errorAxios = error as AxiosError<ErrorResponse>
 			if (errorAxios) {
 				const errorResponse = errorAxios?.response?.data?.error
-				// console.log("error message: ", errorResponse)
 				return errorResponse
 			}
-			// console.log("error message: ", error.message)
 			return error.message
 		} else {
-			// console.log("unexpected error: ", error)
 			return "failed get token price"
 		}
 	}
@@ -97,28 +105,20 @@ export function useGet1inchTokenPrice({ fromToken, toToken, sellAmount }: Custom
 
 	const url = `https://api.1inch.io/v5.0/1/quote?fromTokenAddress=${fromToken}&toTokenAddress=${toToken}&amount=${amount}`
 
-	return useQuery<Swap1inchPrice>([url], async () => get1inchPrice(url), {
+	return useQuery<Swap1inchPrice, AxiosError<ErrorResponse>>([url], async () => get1inchPrice(url), {
 		refetchOnMount: true,
 		refetchOnReconnect: true,
 		refetchOnWindowFocus: false,
 		refetchInterval: 10000,
-		retry: 3,
-		retryDelay: 2000,
+		retry: 1,
 		enabled: Boolean(toToken) && Boolean(+sellAmount),
 		onError: (error) => {
-			if (axios.isAxiosError(error)) {
-				const errorAxios = error as AxiosError<{ error: string }>
-				if (errorAxios) {
-					const errorResponse = errorAxios?.response?.data?.error
-					// console.log("error message: ", errorResponse)
-					return errorResponse
-				}
-				// console.log("error message: ", error.message)
-				return error.message
-			} else {
-				// console.log("unexpected error: ", error)
-				return "failed get token price"
+			if (error.response) {
+				message.error(error.response?.data?.description)
+				return error.response?.data?.description
 			}
+			message.error(error.message)
+			return error.message
 		},
 		onSuccess: (data) => {
 			if (typeof data !== "string") {
