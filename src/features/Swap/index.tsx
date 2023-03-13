@@ -24,6 +24,7 @@ interface Props {}
 
 const Swap: React.FC<Props> = () => {
 	const { from: currentSellToken, to: currentBuyToken } = useAppSelector((state) => state.swapTransaction)
+	const { slippageAmount } = useAppSelector((state) => state.user)
 
 	const numericCurrentDecimal = +currentSellToken.decimals
 	const currentSellAmount = +currentSellToken.amount
@@ -74,7 +75,7 @@ const Swap: React.FC<Props> = () => {
 					fromAddress: account,
 					fromTokenAddress: data1inch?.fromToken.address,
 					gasLimit: String(data1inch?.estimatedGas),
-					slippage: "1",
+					slippage: slippageAmount,
 					toTokenAddress: data1inch?.toToken?.address,
 				})
 				const responseSwap = await requestSwap
