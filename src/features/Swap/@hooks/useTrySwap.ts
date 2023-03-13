@@ -5,7 +5,7 @@ import axios from "axios"
 
 import useToggle from "#/shared/hooks/useToggle"
 
-import type { GetPriceParams, SwapQuote } from "#/redux/@models/Swap"
+import type { SwapQuote } from "#/redux/@models/Swap"
 
 export interface ValidationError {
 	field: string
@@ -14,17 +14,29 @@ export interface ValidationError {
 	description: string
 }
 
+export interface QuoteParams {
+	fromToken: string
+	toToken: string
+	sellAmount: string
+	slippageAmount: string
+}
+
 export interface QuoteError {
 	code: number
 	reason: string
 	validationErrors: ValidationError[]
 }
 
-const getQuote = async ({ fromToken, toToken, sellAmount }: GetPriceParams): Promise<SwapQuote | QuoteError | undefined> => {
+const getQuote = async ({
+	fromToken,
+	toToken,
+	sellAmount,
+	slippageAmount,
+}: QuoteParams): Promise<SwapQuote | QuoteError | undefined> => {
 	try {
 		const request = await axios({
 			method: "GET",
-			url: `https://api.0x.org/swap/v1/quote?sellToken=${fromToken}&buyToken=${toToken}&sellAmount=${sellAmount}&slippagePercentage=0.01`,
+			url: `https://api.0x.org/swap/v1/quote?sellToken=${fromToken}&buyToken=${toToken}&sellAmount=${sellAmount}&slippagePercentage=${slippageAmount}`,
 		})
 		const response = await request.data
 		return response
@@ -34,7 +46,7 @@ const getQuote = async ({ fromToken, toToken, sellAmount }: GetPriceParams): Pro
 	}
 }
 
-export function useTrySwap({ fromToken, toToken, sellAmount }: GetPriceParams) {
+export function useTrySwap({ fromToken, toToken, sellAmount, slippageAmount }: QuoteParams) {
 	// const { provider } = useWeb3React()
 	// const ERC20TokenContract = new ethers.Contract(fromToken, ERC20, provider)
 	// provider.metho
@@ -46,7 +58,7 @@ export function useTrySwap({ fromToken, toToken, sellAmount }: GetPriceParams) {
 	const swapTransaction = async (): Promise<SwapQuote | QuoteError | undefined> => {
 		toggleLoadingSwap()
 		try {
-			const requestQuote = await getQuote({ fromToken, toToken, sellAmount })
+			const requestQuote = await getQuote({ fromToken, toToken, sellAmount, slippageAmount })
 			const responseQuote = requestQuote
 			return responseQuote
 		} catch (error) {
