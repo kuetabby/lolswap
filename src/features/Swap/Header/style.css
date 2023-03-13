@@ -15,6 +15,40 @@
 	transition: 250;
 }
 
+.header-settings-title-container {
+	@apply flex items-center text-white font-semibold pb-3;
+	border-bottom: 1px solid white;
+}
+
+.header-settings-body-container {
+	@apply w-full text-base  font-semibold;
+	max-height: 350px;
+	overflow: auto;
+	/* style={{ maxHeight: "350px", overflow: "auto" }} */
+}
+
+.header-settings-wrapper {
+	@apply flex items-center py-1 my-2 cursor-pointer text-white;
+}
+
+.header-settings-left-wrapper {
+	@apply w-1/12 text-center;
+	color: #6c86ad;
+}
+
+.header-settings-center-wrapper {
+	@apply w-6/12 ml-2;
+}
+
+.header-settings-right-wrapper {
+	@apply w-2/3 text-end;
+	color: #6c86ad;
+}
+
+.header-settings-wrapper:hover > .header-settings-right-wrapper {
+	color: white;
+}
+
 @media (min-width: theme("screens.md")) {
 	.header-icon-wrapper {
 		@apply w-1/4;

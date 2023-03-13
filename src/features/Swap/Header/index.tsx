@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react"
 import { PlusOutlined, SettingOutlined } from "@ant-design/icons"
 
 import AddToken from "../@components/AddToken"
+import Settings from "./Setting"
 
 import useToggle from "#/shared/hooks/useToggle"
 
@@ -15,6 +16,7 @@ interface Props {
 
 const HeaderSwapButton: React.FC<Props> = ({ isSuccessPrice, isFetchingPrice, refetchPrice }) => {
 	const [isAddToken, toggleAddToken, closeAddToken] = useToggle()
+	const [isSetting, toggleSetting, closeSetting] = useToggle()
 
 	const arrowRef = useRef<SVGAnimateTransformElement>(null)
 
@@ -126,12 +128,13 @@ const HeaderSwapButton: React.FC<Props> = ({ isSuccessPrice, isFetchingPrice, re
 					<div className="header-icon" onClick={toggleAddToken}>
 						<PlusOutlined className="p-2" style={{ fontSize: "1.25em" }} />
 					</div>
-					<div className="header-icon">
+					<div className="header-icon" onClick={toggleSetting}>
 						<SettingOutlined className="p-2" style={{ fontSize: "1.25em" }} />
 					</div>
 				</div>
 			</div>
 			{isAddToken && <AddToken isOpen={isAddToken} closeModal={closeAddToken} />}
+			{isSetting && <Settings isOpen={isSetting} closeModal={closeSetting} />}
 		</>
 	)
 }
