@@ -8,5 +8,7 @@ export interface UserState {
 			[address: string]: TokenUniswap
 		}
 	}
+	slippageAmount: string
+	slippageType: "button" | "input"
 	timestamp: number
 }
