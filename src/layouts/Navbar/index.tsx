@@ -1,13 +1,13 @@
 import React from "react"
-// import { useNavigate } from "react-router-dom"
 import { useWeb3React } from "@web3-react/core"
 import { Layout } from "antd"
 import clsx from "clsx"
 
 import AccountWallet from "./@components/Account"
-import { PageTabs } from "./@components/PageTabs"
-import SearchTabs from "./@components/SearchBar"
+// import { PageTabs } from "./@components/PageTabs"
+// import SearchTabs from "./@components/SearchBar"
 import { Chain } from "./@components/Chain"
+import GlobalSetting from "./@components/GlobalSetting"
 import Web3Connect from "./@components/Web3Connect"
 // import ChainSelector from "./@components/ChainSelector"
 // import Web3Status from "#/@app/core/Web3Status"
@@ -33,8 +33,8 @@ const Navbar: React.FC<Props> = () => {
 	useCheckNetwork()
 
 	return (
-		<Header className="!px-0 md:!px-4 !h-20">
-			<nav className="base-nav-container">
+		<Header className="!px-0 !h-20">
+			<nav className="base-nav-container md:!px-4 dark">
 				<div className={clsx("base-side-container", "left-side-container")}>
 					<div className="logo-container text-white">
 						PegaSwap
@@ -50,21 +50,17 @@ const Navbar: React.FC<Props> = () => {
 							// }}
 						/> */}
 					</div>
-					{/* {!isNftPage && (
-						<div className="sm:flex lg:hidden">
-							<ChainSelector leftAlign={true} />
-						</div>
-					)} */}
-					<PageTabs />
+					{/* <PageTabs /> */}
 				</div>
-				<SearchTabs />
+				{/* <SearchTabs /> */}
 				<div className={clsx("base-side-container", "right-side-container")}>
-					<div className="m-4 lg:p-4 w-full flex justify-end">
+					<div className="w-full flex justify-end lg:p-4">
 						{/* <div className="flex xl:hidden relative">
 							<SearchTabs />
 						</div> */}
 						<Chain />
-						{account ? <AccountWallet /> : <Web3Connect />}
+						{account ? <AccountWallet containerClass="hidden sm:flex" /> : <Web3Connect containerClass="hidden sm:flex" />}
+						<GlobalSetting containerClass="hidden sm:flex" />
 						{/* <div className="sm:none lg:flex">
 							<MenuDropdown />
 						</div> */}

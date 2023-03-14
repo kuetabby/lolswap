@@ -1,0 +1,18 @@
+.global-setting-container {
+	@apply justify-between items-center mx-2 w-1/5 lg:w-1/12 h-10 p-3 z-50 bg-transparent border-none;
+}
+
+.global-setting-container:hover {
+	background-color: #99a1bd14;
+	transition: 250;
+}
+
+.global-setting-label {
+	@apply mx-2 font-bold text-white text-base hidden lg:flex leading-5;
+}
+
+@media (min-width: 2560px) {
+	.global-setting-container {
+		width: 10%;
+	}
+}

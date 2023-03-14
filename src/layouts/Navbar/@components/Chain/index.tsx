@@ -1,10 +1,7 @@
 import React from "react"
 import { useWeb3React } from "@web3-react/core"
 import { Button } from "antd"
-import {
-	// DownOutlined,
-	WarningOutlined,
-} from "@ant-design/icons"
+import { DownOutlined, WarningOutlined } from "@ant-design/icons"
 
 import { getChainInfo, L1ChainInfo } from "#/shared/constants/chainInfo"
 
@@ -21,7 +18,7 @@ export const Chain: React.FC<Props> = () => {
 		if ((info as L1ChainInfo)?.label !== undefined && isSupported) {
 			const infoChain = info as L1ChainInfo
 			return (
-				<div className="flex w-full">
+				<div className="flex w-full justify-center items-center">
 					<img src={infoChain.logoUrl} alt={infoChain.label} className="!h-5 !w-5" />
 					<span className="chain-label">{infoChain.label}</span>
 				</div>
@@ -43,7 +40,7 @@ export const Chain: React.FC<Props> = () => {
 		return (
 			<Button className="chain-container">
 				{isChainSupported()}
-				{/* <DownOutlined className="text-blue-500" style={{ fontSize: "1.15em", fontWeight: "bold" }} /> */}
+				<DownOutlined className="mr-1 sm:mr-0 pt-1 text-blue-500" style={{ fontSize: "1.15em", fontWeight: "bold" }} />
 			</Button>
 		)
 	}

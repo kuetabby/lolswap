@@ -1,5 +1,5 @@
 .account-container {
-	@apply flex justify-between items-center w-full md:w-6/12 2xl:w-2/5 h-10 lg:p-4 mr-2 bg-transparent border-white rounded-3xl;
+	@apply justify-between items-center w-full sm:w-3/4 lg:w-4/5 xl:w-2/5 2xl:w-1/3 h-10 lg:p-4 bg-transparent border-white rounded-3xl;
 }
 
 .account-container:hover {
@@ -8,8 +8,7 @@
 }
 
 .account-label {
-	@apply font-bold text-white text-base leading-5;
-	background: #001529;
+	@apply font-bold text-white bg-gray-400 text-base p-1 -mr-3 rounded-full;
 }
 
 .account-floating-box {

@@ -87,38 +87,12 @@ export const SelectWallet: React.FC<Props> = ({ isOpenModal, isPending, onCloseM
 	// const hasMetaMaskExtension = getIsMetaMaskWallet()
 
 	// const metaMaskWallet = hasMetaMaskExtension
-	// 	? {
-	// 			connector: metaMaskConnection.connector,
-	// 			title: "MetaMask",
-	// 			imageUrl: METAMASK_ICON_URL,
-	// 	  }
-	// 	: {
-	// 			connector: metaMaskConnection.connector,
-	// 			title: "Browser Wallet",
-	// 			imageUrl: BROWSER_WALLET_ICON_URL,
-	// 	  }
-
-	// const walletList = useMemo(
-	// 	() => [
-	// 		{
-	// 			connector: coinbaseWalletConnection.connector,
-	// 			title: "Coinbase Wallet",
-	// 			imageUrl: COINBASE_ICON_URL,
-	// 		},
-	// 		{
-	// 			connector: walletConnectConnection.connector,
-	// 			title: "WalletConnect",
-	// 			imageUrl: WALLET_CONNECT_ICON_URL,
-	// 		},
-	// 	],
-	// 	[]
-	// )
 
 	const displayWallet = useMemo(() => {
 		const wallet = browserWallet()
 		if (typeof wallet !== undefined) {
 			return wallet.map((item) => {
-				if (typeof item === "undefined" || typeof item === "boolean") return null
+				if (!item) return null
 				return (
 					<AppCard
 						key={item.title}
@@ -138,13 +112,6 @@ export const SelectWallet: React.FC<Props> = ({ isOpenModal, isPending, onCloseM
 		}
 		return null
 	}, [])
-
-	// const displayWallet = () => {
-	// 	return walletList.map((item) => {
-	// 		return (
-	// 		)
-	// 	})
-	// }
 
 	return (
 		<Modal

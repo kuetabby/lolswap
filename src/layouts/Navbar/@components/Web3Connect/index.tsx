@@ -3,7 +3,8 @@ import { useAppDispatch } from "#/redux/store"
 import { useWeb3React } from "@web3-react/core"
 import { Connector } from "@web3-react/types"
 import { Button } from "antd"
-import { DownOutlined } from "@ant-design/icons"
+import { DownOutlined, UpOutlined } from "@ant-design/icons"
+import clsx from "clsx"
 
 import useToggle from "#/shared/hooks/useToggle"
 
@@ -13,9 +14,13 @@ import { SelectWallet } from "./SelectWallet"
 import { updateConnectionError } from "#/redux/slices/Connection"
 import { updateSelectedWallet } from "#/redux/slices/User"
 
-interface Props {}
+import "./style.css"
 
-const Web3Connect: React.FC<Props> = () => {
+interface Props {
+	containerClass: string
+}
+
+const Web3Connect: React.FC<Props> = ({ containerClass }) => {
 	const [isOpenWallet, toggleWallet, closeWallet] = useToggle()
 	const [isPending, togglePending, closePending] = useToggle()
 
@@ -72,14 +77,14 @@ const Web3Connect: React.FC<Props> = () => {
 
 	return (
 		<>
-			<Button
-				className="flex justify-between items-center w-32 h-10 px-3 py-3  bg-gray-100 rounded-3xl"
-				type="ghost"
-				onClick={toggleWallet}
-			>
-				<div className="font-bold text-base text-blue-500 m-0 hover:opacity-50">Connect</div>
+			<Button className={clsx("connect-container", containerClass)} onClick={toggleWallet}>
+				<div className="connect-title">Connect</div>
 				<div className="h-5 mx-2 bg-blue-300" style={{ width: "1px" }} />
-				<DownOutlined className="text-blue-500 mt-1 ml-3" style={{ fontSize: "1.15em", fontWeight: "bold" }} />
+				{isOpenWallet ? (
+					<UpOutlined className="text-blue-500 mt-1" style={{ fontSize: "1.15em", fontWeight: "bold" }} />
+				) : (
+					<DownOutlined className="text-blue-500 mt-1" style={{ fontSize: "1.15em", fontWeight: "bold" }} />
+				)}
 			</Button>
 			{isOpenWallet && (
 				<SelectWallet isOpenModal={isOpenWallet} isPending={isPending} onCloseModal={onCloseWallet} tryActivation={tryActivation} />

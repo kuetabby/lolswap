@@ -7,10 +7,9 @@ import { formatEther } from "@ethersproject/units"
 
 import useToggle from "#/shared/hooks/useToggle"
 
-import { getChainInfo } from "#/shared/constants/chainInfo"
-import { shortenAddress } from "#/@app/utility/Address"
-
 import { updateSelectedWallet } from "#/redux/slices/User"
+
+import { getChainInfo } from "#/shared/constants/chainInfo"
 
 interface Props {
 	isOpenAccount: boolean
@@ -18,7 +17,7 @@ interface Props {
 }
 
 export const AccountInfo: React.FC<Props> = ({ isOpenAccount, toggleOpenAccount }) => {
-	const { account, chainId, ENSName, connector, provider } = useWeb3React()
+	const { account, chainId, connector, provider } = useWeb3React()
 
 	const [isLoadingBalance, toggleLoadingBalance, finishedLoadingBalance] = useToggle()
 
@@ -79,8 +78,7 @@ export const AccountInfo: React.FC<Props> = ({ isOpenAccount, toggleOpenAccount 
 			}}
 			onCancel={toggleOpenAccount}
 			title={
-				<div className="flex justify-between items-center">
-					<div className="account-label">{ENSName || shortenAddress(account ?? "")}</div>
+				<div className="flex justify-end items-center">
 					<Tooltip placement="bottom" title="Disconnect" color="blue">
 						<Button size="small" className="px-2 bg-slate-500 border-none hover:bg-blue-500" onClick={onDisconnect}>
 							<LogoutOutlined className="text-white text-lg" />

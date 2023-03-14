@@ -3,7 +3,6 @@
 }
 
 .base-side-container {
-	/* @apply flex w-full; */
 	@apply flex w-full flex-1;
 }
 
@@ -50,8 +49,13 @@
 		display: none;
 	}
 	.logo-container {
-		margin-left: 0px;
 		margin-right: 0.75rem;
+	}
+}
+
+@media (min-width: theme("screens.md")) {
+	.logo-container {
+		@apply ml-0;
 	}
 }
 
