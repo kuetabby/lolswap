@@ -31,7 +31,7 @@ export function useBalances(provider?: ReturnType<Web3ReactHooks["useProvider"]>
 	return balances
 }
 
-async function isNativeToken(provider?: ReturnType<Web3ReactHooks["useProvider"]>, address?: string) {
+export async function isNativeToken(provider?: ReturnType<Web3ReactHooks["useProvider"]>, address?: string) {
 	if (provider && address) {
 		const bytecode = await provider?.getCode(address)
 		return bytecode === "0x"
@@ -58,10 +58,9 @@ export const useBalanceTokenBased = (token: BaseSwapState, isSupported: boolean)
 
 	const checkToken = async () => {
 		const checkIsNative = await isNativeToken(provider, token.id)
-		const checkResponse = await checkIsNative
 		setBalance("0")
 		toggleLoading()
-		if (checkResponse) {
+		if (checkIsNative) {
 			try {
 				const requestNativeBalance = await displayNativeBalance({ account, provider })
 				const responseNativeBalance = await requestNativeBalance

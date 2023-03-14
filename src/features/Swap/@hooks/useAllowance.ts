@@ -128,7 +128,7 @@ export const useAllowExchange = () => {
 		// 	from: account,
 		// })
 		// const gas = gasLimit?.toString()
-		console.log(response, "transaction")
+		// console.log(response, "transaction")
 		return response
 	}
 

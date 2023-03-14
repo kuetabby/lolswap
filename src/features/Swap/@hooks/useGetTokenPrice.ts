@@ -123,7 +123,7 @@ export function useGet1inchTokenPrice({ fromToken, toToken, sellAmount }: Custom
 		onSuccess: (data) => {
 			if (typeof data !== "string") {
 				const buyAmount = +data.toTokenAmount / 10 ** +data.toToken.decimals
-				dispatch(setBuyTradeAmount(String(buyAmount)))
+				dispatch(setBuyTradeAmount(buyAmount.toFixed(7)))
 				signTransaction(fromToken, sellAmount)
 				return data
 			}
