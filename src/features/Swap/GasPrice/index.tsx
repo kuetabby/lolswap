@@ -6,38 +6,55 @@ import { Card, Tooltip } from "antd"
 import { useGetETHPrice } from "#/shared/hooks/useGetETHPrice"
 
 import type { Swap1inchPrice } from "#/redux/@models/Swap"
+import { useGetTokenAggregator } from "../@hooks/useGetTokenPriceAggregator"
 
 interface Props {
 	data?: Swap1inchPrice
 }
 
 const GasPrice: React.FC<Props> = ({ data }) => {
-	const { gasPrice } = useAppSelector((state) => state.swapTransaction.requirement)
+	const { from: fromTrade, to: toTrade, requirement } = useAppSelector((state) => state.swapTransaction)
 
+	const { gasPrice } = requirement
 	const gasLimit = data?.estimatedGas || 0
 
 	const [gasCost, isFetching] = useGetETHPrice({ gasPrice, gasLimit })
+	const [formattedPrice] = useGetTokenAggregator()
+
+	const text = `${"1 " + toTrade.symbol + " = " + formattedPrice ?? "-"} ${fromTrade.symbol}`
 
 	return (
 		<Card
-			className="w-full h-10 mt-4 flex justify-between items-center !p-0 border-none !rounded-xl"
-			bodyStyle={{ padding: "1em", width: "100%" }}
+			className="w-full mt-4 border-none !rounded-xl"
+			bodyStyle={{
+				padding: "0px 0.5em",
+			}}
 			style={{ background: "#06070A", boxShadow: "inset 0 0 0 1px #202835" }}
 		>
-			<Tooltip placement="topLeft" title="Estimated Gas">
-				<div className="w-full sm:w-1/3 flex">
-					<img src="https://app.1inch.io/assets/images/gasless/regular-night_2-1.png" className="w-5 h-5" alt="gas-icon" />
-					<div className="w-2/4 ml-1 flex items-center">
-						{isFetching && <div className="w-full h-3 animate-pulse bg-slate-700 rounded" />}
-						{!isFetching && (
-							<span className="text-sm font-semibold" style={{ color: "#6C86AD" }}>
-								$ {gasCost.toFixed(2) || 0}
-							</span>
+			<div className="w-full h-10 flex justify-between items-center py-0 sm:px-2">
+				{(!formattedPrice || !gasLimit) && <div className="w-2/3 h-3 animate-pulse bg-slate-700 rounded mr-2" />}
+				{formattedPrice && gasLimit && <div className="w-2/3 flex text-white font-semibold text-xs sm:text-sm">{text}</div>}
+				<Tooltip placement="topLeft" title="Estimated Gas">
+					<div className="w-1/5 md:w-1/4 lg:w-1/5 2xl:w-2/12 flex justify-end">
+						{(isFetching || !gasLimit) && <div className="w-full h-3 m-auto animate-pulse bg-slate-700 rounded" />}
+						{!isFetching && gasLimit && (
+							<>
+								<img
+									src="https://app.1inch.io/assets/images/gasless/regular-night_2-1.png"
+									className="w-4 h-4 sm:w-5 sm:h-5"
+									alt="gas-icon"
+								/>
+								<div className="w-full sm:ml-1 flex items-center">
+									<span className="text-xs sm:text-sm font-semibold" style={{ color: "#6C86AD" }}>
+										$ {gasCost.toFixed(2) || 0}
+									</span>
+									{/* <DownOutlined style={{ marginTop: "0.25em", marginLeft: "0.5em", color: "white" }} /> */}
+								</div>
+							</>
 						)}
-						{/* <DownOutlined style={{ marginTop: "0.25em", marginLeft: "0.5em", color: "white" }} /> */}
 					</div>
-				</div>
-			</Tooltip>
+				</Tooltip>
+			</div>
 		</Card>
 	)
 }
