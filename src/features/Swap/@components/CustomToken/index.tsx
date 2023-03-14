@@ -32,7 +32,8 @@ const CustomToken: React.FC<Props> = () => {
 	const nameInput = useRef<InputRef>(null)
 
 	const totalTokens = chainId
-		? Object.values(tokens[chainId]).filter((item) => item.name?.toLocaleLowerCase().includes(debouncedValue.toLowerCase())) ?? []
+		? Object.values(tokens[chainId] ?? []).filter((item) => item.name?.toLocaleLowerCase().includes(debouncedValue.toLowerCase())) ??
+		  []
 		: []
 
 	useEffect(() => {

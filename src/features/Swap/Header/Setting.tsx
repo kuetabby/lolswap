@@ -27,7 +27,7 @@ const Settings: React.FC<Props> = ({ closeModal, isOpen }) => {
 	const { chainId } = useWeb3React()
 	const dispatch = useAppDispatch()
 
-	const totalTokens = chainId ? Object.values(tokens[chainId]).length ?? 0 : 0
+	const totalTokens = chainId ? Object.values(tokens[chainId] ?? []).length ?? 0 : 0
 	const isSlippageButton = slippageType === "button"
 	const isSlippageFrontrun = +slippageAmount > 0.63
 
@@ -152,11 +152,7 @@ const Settings: React.FC<Props> = ({ closeModal, isOpen }) => {
 								<div className="text-white text-base">Transaction might be frontrun because of high slippage tolerance.</div>
 							</Card>
 						)}
-						<div
-							className="header-settings-wrapper"
-							onClick={toggleCustomToken}
-							style={{ pointerEvents: totalTokens ? "auto" : "none" }}
-						>
+						<div className="header-settings-wrapper" onClick={toggleCustomToken}>
 							<div className="header-settings-left-wrapper">
 								<AimOutlined style={{ fontSize: "1.35em" }} />
 							</div>
