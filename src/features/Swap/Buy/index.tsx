@@ -65,9 +65,7 @@ const BuyCard: React.FC<Props> = ({ data, isFetching }) => {
 						</div>
 						<div className="w-1/2 flex items-center">
 							{data?.toToken.address && !isFetching && (
-								<div className="w-full text-sm text-right text-white font-semibold">
-									{Number(currentTrade.amount).toLocaleString()}
-								</div>
+								<div className="w-full text-sm text-right text-white font-semibold">{Number(currentTrade.amount)}</div>
 							)}
 							{isFetching && (
 								<div className="w-full flex items-end justify-end">
