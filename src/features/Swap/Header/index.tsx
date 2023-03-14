@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react"
-import { PlusOutlined, SettingOutlined } from "@ant-design/icons"
+import { PlusOutlined, PullRequestOutlined } from "@ant-design/icons"
 
 import AddToken from "../@components/AddToken"
 import Settings from "./Setting"
@@ -129,7 +129,7 @@ const HeaderSwapButton: React.FC<Props> = ({ isSuccessPrice, isFetchingPrice, re
 						<PlusOutlined className="p-2" style={{ fontSize: "1.25em" }} />
 					</div>
 					<div className="header-icon" onClick={toggleSetting}>
-						<SettingOutlined className="p-2" style={{ fontSize: "1.25em" }} />
+						<PullRequestOutlined className="p-2" style={{ fontSize: "1.25em" }} />
 					</div>
 				</div>
 			</div>

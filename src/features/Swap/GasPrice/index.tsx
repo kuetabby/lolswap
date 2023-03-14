@@ -31,11 +31,11 @@ const GasPrice: React.FC<Props> = ({ data }) => {
 			}}
 			style={{ background: "#06070A", boxShadow: "inset 0 0 0 1px #202835" }}
 		>
-			<div className="w-full h-10 flex justify-between items-center py-0 sm:px-2">
+			<div className="w-full h-10 flex justify-between items-center py-0 px-2">
 				{(!formattedPrice || !gasLimit) && <div className="w-2/3 h-3 animate-pulse bg-slate-700 rounded mr-2" />}
 				{formattedPrice && gasLimit && <div className="w-2/3 flex text-white font-semibold text-xs sm:text-sm">{text}</div>}
 				<Tooltip placement="topLeft" title="Estimated Gas">
-					<div className="w-1/5 md:w-1/4 lg:w-1/5 2xl:w-2/12 flex justify-end">
+					<div className="w-auto flex justify-end">
 						{(isFetching || !gasLimit) && <div className="w-full h-3 m-auto animate-pulse bg-slate-700 rounded" />}
 						{!isFetching && gasLimit && (
 							<>
@@ -44,7 +44,7 @@ const GasPrice: React.FC<Props> = ({ data }) => {
 									className="w-4 h-4 sm:w-5 sm:h-5"
 									alt="gas-icon"
 								/>
-								<div className="w-full sm:ml-1 flex items-center">
+								<div className="w-full ml-1 flex items-center">
 									<span className="text-xs sm:text-sm font-semibold" style={{ color: "#6C86AD" }}>
 										$ {gasCost.toFixed(2) || 0}
 									</span>
