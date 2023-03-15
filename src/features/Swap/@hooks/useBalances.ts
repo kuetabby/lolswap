@@ -51,7 +51,7 @@ export const useBalanceTokenBased = (token: BaseSwapState, isSupported: boolean)
 			checkToken()
 		}
 
-		if (!isSupported) {
+		if (!isSupported || !account) {
 			setBalance("0")
 		}
 	}, [isSupported, account, token.id])

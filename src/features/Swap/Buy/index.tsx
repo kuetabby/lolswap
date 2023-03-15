@@ -43,7 +43,7 @@ const BuyCard: React.FC<Props> = ({ data, isFetching }) => {
 				<div className="buy-container">
 					<div className="w-full flex justify-between">
 						<p className="buy-text-info">You Buy</p>
-						<div className="flex justify-between h-4" style={{ minWidth: "22.5%", maxWidth: "33.33%" }}>
+						<div className="buy-text-balance">
 							{isLoadingBalance && <Spin className="mx-1" />}
 							{!isLoadingBalance && <div className="font-semibold text-right w-36 mr-1">Balance: {isSupported ? balance : 0}</div>}
 							{/* <div className="text-blue-500 cursor-pointer hover:bg-blue-400 hover:text-white px-1">MAX</div> */}

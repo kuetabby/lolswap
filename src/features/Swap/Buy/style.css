@@ -8,6 +8,12 @@
 	color: #6c86ad;
 }
 
+.buy-text-balance {
+	@apply flex justify-between h-4;
+	min-width: 22.5%;
+	max-width: 50%;
+}
+
 .buy-container-token {
 	@apply w-full my-2 flex justify-between;
 }
@@ -36,6 +42,12 @@
 .buy-total-balance {
 	@apply m-0;
 	color: #6c86ad;
+}
+
+@media (min-width: theme("screens.md")) {
+	.buy-text-balance {
+		max-width: 33.33%;
+	}
 }
 
 @media (max-width: theme("screens.lg")) {

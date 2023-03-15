@@ -42,12 +42,14 @@ export const useGetTokenAggregator = () => {
 		const price = BigNumber.from(contractRate).mul(numerator).div(denominator)
 		const rate = +price / 10 ** 18
 		const preciseFloat = priceToPreciseFloat(+rate)
+
 		if (isRevert) {
-			const preciseRevert = formatTransactionAmount(1 / Number(preciseFloat)).substring(0, 9)
+			const preciseRevert = (1 / Number(preciseFloat)).toLocaleString("en-US")
 			setTrxRate(preciseRevert)
 			return preciseRevert
 		}
-		setTrxRate(String(preciseFloat).substring(0, 9))
+		setTrxRate(formatTransactionAmount(Number(preciseFloat)).substring(0, 9))
+		// setTrxRate(Number(preciseFloat).toFixed(+decimals / 2))
 		return preciseFloat
 	}
 

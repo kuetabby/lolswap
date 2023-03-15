@@ -126,8 +126,8 @@ const Swap: React.FC<Props> = () => {
 
 	return (
 		<WalletConnectConfig>
-			<div className="flex flex-wrap justify-center items-center w-full mt-8 font-sans">
-				<AppCard className="!text-white w-full sm:w-2/4 lg:w-2/5 xl:w-1/3 2xl:w-1/4 m-2 sm:m-0" style={{ background: "#131823" }}>
+			<div className="flex flex-wrap justify-center items-center w-full my-4 font-sans">
+				<AppCard className="!text-white w-full sm:w-2/4 lg:w-2/5 xl:w-1/3 2xl:w-30% m-2 sm:m-0" style={{ background: "#131823" }}>
 					<HeaderSwapButton isSuccessPrice={isSuccessPrice} isFetchingPrice={isFetchingPrice} refetchPrice={refetchPrice} />
 					<SellCard />
 					<div className="relative z-10">

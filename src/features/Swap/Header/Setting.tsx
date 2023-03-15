@@ -76,20 +76,16 @@ const Settings: React.FC<Props> = ({ closeModal, isOpen }) => {
 								<span className={clsx("mr-3 hover:!text-white", isSlippageFrontrun && "text-red-400")}>
 									{slippageAmount}% {!isSlippageButton && <span className="text-sm">Custom</span>}
 								</span>
-								{isCollapseSlippage ? (
-									<UpOutlined style={{ transition: "all 0.3s ease", transitionDelay: "0.2s" }} />
-								) : (
-									<DownOutlined style={{ transition: "all 0.3s ease", transitionDelay: "0.2s" }} />
-								)}
+								{isCollapseSlippage ? <UpOutlined /> : <DownOutlined />}
 							</div>
 						</div>
 						<div
-							className={clsx("flex justify-between items-center w-full", isCollapseSlippage ? "!h-8" : "!h-0 overflow-hidden")}
+							className={clsx("heder-slippage-container", isCollapseSlippage ? "!h-8" : "!h-0 overflow-hidden")}
 							style={{ transition: "all 0.2s ease-in-out" }}
 						>
 							<Button
 								className={clsx(
-									"px-6 bg-blue-900 text-blue-500 opacity-90 hover:text-transparent",
+									"sm:px-6 bg-blue-900 text-blue-500 opacity-90 hover:text-transparent",
 									String(slippageAmount) === "0.5" && isSlippageButton && "!bg-blue-600 text-white opacity-100"
 								)}
 								id="0.5"
@@ -98,10 +94,10 @@ const Settings: React.FC<Props> = ({ closeModal, isOpen }) => {
 							>
 								Auto
 							</Button>
-							<div className="flex justify-between w-8/12 rounded-md bg-black">
+							<div className="header-slippage-list-container">
 								<Button
 									className={clsx(
-										"w-5/12 px-3 border-none outline-none !rounded-lg bg-black",
+										"header-slippage-button",
 										String(slippageAmount) === "0.1" && isSlippageButton && "!bg-blue-500 !text-white"
 									)}
 									onClick={onSetSlippageAmount}
@@ -112,7 +108,7 @@ const Settings: React.FC<Props> = ({ closeModal, isOpen }) => {
 								</Button>
 								<Button
 									className={clsx(
-										"w-5/12 px-3 border-none outline-none !rounded-lg bg-black",
+										"header-slippage-button",
 										String(slippageAmount) === "0.5" && isSlippageButton && "!bg-blue-500 !text-white"
 									)}
 									onClick={onSetSlippageAmount}
@@ -123,7 +119,7 @@ const Settings: React.FC<Props> = ({ closeModal, isOpen }) => {
 								</Button>
 								<Button
 									className={clsx(
-										"w-5/12 px-3 border-none outline-none !rounded-lg bg-black",
+										"header-slippage-button",
 										String(slippageAmount) === "1" && isSlippageButton && "!bg-blue-500 !text-white"
 									)}
 									onClick={onSetSlippageAmount}
@@ -143,11 +139,11 @@ const Settings: React.FC<Props> = ({ closeModal, isOpen }) => {
 								/>
 							</div>
 						</div>
-						{isSlippageFrontrun && (
+						{isCollapseSlippage && isSlippageFrontrun && (
 							<Card
-								className="w-full h-20 mt-3 p-auto border-none !rounded-xl"
+								className="w-full mt-3 p-auto border-none !rounded-xl"
 								bodyStyle={{ padding: "1em", color: "white" }}
-								style={{ boxShadow: "inset 0 0 0 1px #202835", background: "rgba(193, 61, 84, .25)" }}
+								style={{ height: "5.5em", boxShadow: "inset 0 0 0 1px #202835", background: "rgba(193, 61, 84, .25)" }}
 							>
 								<div className="text-white text-base">Transaction might be frontrun because of high slippage tolerance.</div>
 							</Card>

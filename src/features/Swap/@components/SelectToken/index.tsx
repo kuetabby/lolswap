@@ -1,7 +1,7 @@
-import React, { useCallback, useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import { useWeb3React } from "@web3-react/core"
 import { useAppSelector, useAppDispatch } from "#/redux/store"
-import { Modal, Input, List, Button } from "antd"
+import { Modal, Input, List, Button, InputRef } from "antd"
 import { SearchOutlined } from "@ant-design/icons"
 
 import { TokenWarningIcon } from "./Warning"
@@ -52,6 +52,14 @@ const SelectToken: React.FC<Props> = ({ closeModal, isOpen, type }) => {
 
 	const dispatch = useAppDispatch()
 	const { chainId } = useWeb3React()
+
+	const tokenInput = useRef<InputRef>(null)
+
+	useEffect(() => {
+		if (tokenInput.current) {
+			tokenInput.current.focus()
+		}
+	}, [])
 
 	const onChangeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setSearchValue(e.target.value)
@@ -148,6 +156,7 @@ const SelectToken: React.FC<Props> = ({ closeModal, isOpen, type }) => {
 					prefix={<SearchOutlined style={{ color: "gray", fontWeight: "bold", fontSize: "1.35em", marginRight: "0.25em" }} />}
 					onChange={onChangeValue}
 					value={searchValue}
+					ref={tokenInput}
 					placeholder="Search by name or paste address"
 				/>
 				<List
