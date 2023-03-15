@@ -1,3 +1,9 @@
+:root {
+	--clr-bg-dark-primary: rgb(19, 24, 35);
+	--clr-bg-dark-secondary: #06070a;
+	--clr-bg-light: #fafafa; /* zinc-50 */
+}
+
 body {
 	margin: 0;
 	padding: 0;
@@ -16,12 +22,12 @@ code {
 .dark {
 	@apply text-zinc-50;
 	/* background: linear-gradient(to right, #2b5876, #4e4376); */
-	background: rgb(19, 24, 35);
+	background: var(--clr-bg-dark-primary);
 }
 
 .dark-navbar {
 	@apply text-zinc-50;
-	background: #06070a;
+	background: var(--clr-bg-dark-secondary);
 }
 
 @tailwind base;
