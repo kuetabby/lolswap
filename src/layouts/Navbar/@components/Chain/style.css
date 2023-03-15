@@ -1,14 +1,22 @@
 .chain-container {
-	@apply flex justify-center items-center w-11/12 sm:w-2/4 md:w-5/12 lg:w-1/3 xl:w-1/4 2xl:w-1/5 h-10 px-1 sm:p-3 mr-3 bg-transparent border-none;
+	@apply flex justify-center items-center w-11/12 sm:w-2/4 md:w-5/12 lg:w-1/3 xl:w-1/4 2xl:w-1/5 h-10 px-1 sm:p-3 mr-3 border-none bg-blue-600;
 }
 
 .chain-container:hover {
-	background-color: #99a1bd14;
+	@apply bg-blue-400;
 	transition: 250;
 }
 
 .chain-label {
 	@apply mx-2 font-bold text-white text-base flex leading-5;
+}
+
+.chain-dropdown-container > .ant-dropdown-menu.ant-dropdown-menu-root {
+	@apply !bg-black;
+}
+
+.ant-dropdown.chain-dropdown-container > .ant-dropdown-menu > .ant-dropdown-menu-item-only-child {
+	@apply hover:bg-slate-600;
 }
 
 @media (min-width: 2560px) {

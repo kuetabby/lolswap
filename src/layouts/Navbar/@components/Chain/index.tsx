@@ -1,19 +1,32 @@
 import React from "react"
 import { useWeb3React } from "@web3-react/core"
-import { Button } from "antd"
+import { Button, Dropdown, MenuProps } from "antd"
 import { DownOutlined, WarningOutlined } from "@ant-design/icons"
 
+// import useSelectChain from "../../@hooks/useSelectChain"
+
+import { SupportedChainId } from "#/shared/constants/chains"
 import { getChainInfo, L1ChainInfo } from "#/shared/constants/chainInfo"
 
 import "./style.css"
 
 interface Props {}
 
+const NETWORK_SELECTOR_CHAINS = [
+	SupportedChainId.MAINNET,
+	SupportedChainId.POLYGON,
+	SupportedChainId.OPTIMISM,
+	SupportedChainId.ARBITRUM_ONE,
+	SupportedChainId.CELO,
+]
+
 export const Chain: React.FC<Props> = () => {
 	const { chainId } = useWeb3React()
 
-	const isChainSupported = () => {
-		const info = chainId ? getChainInfo(chainId) : undefined
+	// const selectChain = useSelectChain()
+
+	const isChainSupported = (id: number) => {
+		const info = id ? getChainInfo(id) : undefined
 		const isSupported = !!info
 		if ((info as L1ChainInfo)?.label !== undefined && isSupported) {
 			const infoChain = info as L1ChainInfo
@@ -26,22 +39,33 @@ export const Chain: React.FC<Props> = () => {
 		}
 
 		return (
-			<div className="flex items-center w-full">
-				<WarningOutlined size={24} className="!text-red-500" />
-				<span className="text-red-500 mx-2" style={{ lineHeight: "20px" }}>
-					Unsupported
-				</span>
+			<div className="flex w-full justify-center items-center">
+				<WarningOutlined className="!text-red-500 text-base" />
+				<span className="text-red-500 ml-2 leading-5">Unsupported</span>
 			</div>
 		)
 	}
 
+	const chainList: MenuProps["items"] = NETWORK_SELECTOR_CHAINS.map((chain) => ({
+		key: chain,
+		label: isChainSupported(chain),
+		disabled: !getChainInfo(chain),
+	}))
+
 	// console.log(`Priority Connector is: ${getName(connector)}`, connector)
 	if (chainId) {
 		return (
-			<Button className="chain-container">
-				{isChainSupported()}
-				<DownOutlined className="mr-1 sm:mr-0 pt-1 text-blue-500" style={{ fontSize: "1.15em", fontWeight: "bold" }} />
-			</Button>
+			<Dropdown
+				menu={{ items: chainList, onClick: (i) => console.log(i, "chain id") }}
+				trigger={["click"]}
+				placement="bottom"
+				overlayClassName="chain-dropdown-container"
+			>
+				<Button className="chain-container" shape="round">
+					{isChainSupported(chainId)}
+					<DownOutlined className="mr-1 sm:mr-0 pt-1 text-white" style={{ fontSize: "1.15em", fontWeight: "bold" }} />
+				</Button>
+			</Dropdown>
 		)
 	}
 
