@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useAppSelector } from "#/redux/store"
 import { useWeb3React } from "@web3-react/core"
 import { BigNumber, ethers } from "ethers"
