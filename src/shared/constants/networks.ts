@@ -1,7 +1,6 @@
 import { SupportedChainId } from "./chains"
 
 const INFURA_KEY = import.meta.env.VITE_INFURA_KEY
-console.log(INFURA_KEY, "log")
 
 if (typeof INFURA_KEY === "undefined") {
 	throw new Error(`REACT_APP_INFURA_KEY must be a defined environment variable`)
@@ -57,9 +56,9 @@ export const FALLBACK_URLS: { [key in SupportedChainId]: string[] } = {
 		// "Fallback" URLs
 		"https://arbitrum.public-rpc.com",
 	],
-	[SupportedChainId.ARBITRUM_RINKEBY]: [
+	[SupportedChainId.ARBITRUM_GOERLI]: [
 		// "Safe" URLs
-		"https://rinkeby.arbitrum.io/rpc",
+		"https://goerli-rollup.arbitrum.io/rpc",
 	],
 	[SupportedChainId.OPTIMISM]: [
 		// "Safe" URLs
@@ -96,9 +95,9 @@ export const RPC_URLS: { [key in SupportedChainId]: string[] } = {
 		`https://arbitrum-mainnet.infura.io/v3/${INFURA_KEY}`,
 		...FALLBACK_URLS[SupportedChainId.ARBITRUM_ONE],
 	],
-	[SupportedChainId.ARBITRUM_RINKEBY]: [
+	[SupportedChainId.ARBITRUM_GOERLI]: [
 		`https://arbitrum-rinkeby.infura.io/v3/${INFURA_KEY}`,
-		...FALLBACK_URLS[SupportedChainId.ARBITRUM_RINKEBY],
+		...FALLBACK_URLS[SupportedChainId.ARBITRUM_GOERLI],
 	],
 	[SupportedChainId.POLYGON]: [`https://polygon-mainnet.infura.io/v3/${INFURA_KEY}`, ...FALLBACK_URLS[SupportedChainId.POLYGON]],
 	[SupportedChainId.POLYGON_MUMBAI]: [
