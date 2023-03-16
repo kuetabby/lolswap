@@ -3,7 +3,8 @@ import { useWeb3React } from "@web3-react/core"
 import { Button, Dropdown, MenuProps } from "antd"
 import { DownOutlined, WarningOutlined } from "@ant-design/icons"
 
-// import useSelectChain from "../../@hooks/useSelectChain"
+import useSelectChain from "../../@hooks/useSelectChain"
+import useToggle from "#/shared/hooks/useToggle"
 
 import { SupportedChainId } from "#/shared/constants/chains"
 import { getChainInfo, L1ChainInfo } from "#/shared/constants/chainInfo"
@@ -11,27 +12,43 @@ import { getChainInfo, L1ChainInfo } from "#/shared/constants/chainInfo"
 import "./style.css"
 
 interface Props {}
+interface MenuInfo {
+	key: string
+	keyPath: string[]
+	/** @deprecated This will not support in future. You should avoid to use this */
+	item: React.ReactInstance
+	domEvent: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>
+}
 
 const NETWORK_SELECTOR_CHAINS = [
 	SupportedChainId.MAINNET,
-	SupportedChainId.POLYGON,
-	SupportedChainId.OPTIMISM,
+	// SupportedChainId.POLYGON,
+	// SupportedChainId.OPTIMISM,
 	SupportedChainId.ARBITRUM_ONE,
-	SupportedChainId.CELO,
+	// SupportedChainId.CELO,
 ]
 
 export const Chain: React.FC<Props> = () => {
 	const { chainId } = useWeb3React()
 
-	// const selectChain = useSelectChain()
+	const [isPendingChain, togglePendingChain, finishedPendingChain] = useToggle()
+
+	const selectChain = useSelectChain()
+
+	const onSelectChain = async (item: MenuInfo) => {
+		const targetChainId = +item.key as SupportedChainId
+		togglePendingChain()
+		await selectChain(targetChainId)
+		finishedPendingChain()
+	}
 
 	const isChainSupported = (id: number) => {
 		const info = id ? getChainInfo(id) : undefined
 		const isSupported = !!info
-		if ((info as L1ChainInfo)?.label !== undefined && isSupported) {
+		if (isSupported) {
 			const infoChain = info as L1ChainInfo
 			return (
-				<div className="flex w-full justify-center items-center">
+				<div className="chain-dropdown-item">
 					<img src={infoChain.logoUrl} alt={infoChain.label} className="!h-5 !w-5" />
 					<span className="chain-label">{infoChain.label}</span>
 				</div>
@@ -39,7 +56,7 @@ export const Chain: React.FC<Props> = () => {
 		}
 
 		return (
-			<div className="flex w-full justify-center items-center">
+			<div className="chain-dropdown-item">
 				<WarningOutlined className="!text-red-500 text-base" />
 				<span className="text-red-500 ml-2 leading-5">Unsupported</span>
 			</div>
@@ -56,7 +73,8 @@ export const Chain: React.FC<Props> = () => {
 	if (chainId) {
 		return (
 			<Dropdown
-				menu={{ items: chainList, onClick: (i) => console.log(i, "chain id") }}
+				disabled={isPendingChain}
+				menu={{ items: chainList, onClick: (item) => onSelectChain(item) }}
 				trigger={["click"]}
 				placement="bottom"
 				overlayClassName="chain-dropdown-container"

@@ -1,19 +1,18 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useAppSelector } from "#/redux/store"
 import { useQuery, useMutation } from "react-query"
-import { gql } from "graphql-request"
 import { useWeb3React } from "@web3-react/core"
-import axios from "axios"
 import { useWorker } from "@koale/useworker"
+import axios from "axios"
+import { gql } from "graphql-request"
 
 import useToggle from "#/shared/hooks/useToggle"
 import { useGetToken } from "#/shared/hooks/useGetToken"
 
 import { isAddress } from "#/@app/utility/Address"
+import { listDefaultTokens } from "#/@app/utility/Token/listsTokens"
 
 import ethereumLogoUrl from "#/assets/ethereum-logo.png"
-
-// const INFURA_KEY = import.meta.env.VITE_INFURA_KEY
 
 export type BaseToken = {
 	id: string
@@ -51,38 +50,6 @@ export const SearchTokensDocument = gql`
 
 const endpoint = "https://wispy-bird-88a7.uniswap.workers.dev/?url=http://tokens.1inch.eth.link"
 const client = "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3"
-
-export const defaultTokens = [
-	{
-		id: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-		decimals: "18",
-		logoURI: ethereumLogoUrl,
-		name: "Ethereum",
-		symbol: "ETH",
-	},
-	{
-		id: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-		decimals: "18",
-		logoURI:
-			"https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
-		name: "Wrapped Ether",
-		symbol: "WETH",
-	},
-	{
-		id: "0x111111111117dC0aa78b770fA6A738034120C302",
-		decimals: "18",
-		logoURI: "https://tokens.1inch.io/0x111111111117dc0aa78b770fa6a738034120c302.png",
-		name: "1INCHToken",
-		symbol: "1INCH",
-	},
-	// {
-	// 	id: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
-	// 	decimals: "6",
-	// 	logoURI: "https://tokens.1inch.io/0xdac17f958d2ee523a2206206994597c13d831ec7.png",
-	// 	name: "TetherUSD",
-	// 	symbol: "USDT",
-	// },
-]
 
 const useSearchTokensQuery = () => {
 	return useQuery(
@@ -245,8 +212,6 @@ export function useSearchTokenUniswap(value: string) {
 
 	const { isLoading: isLoadingQuery, mutate, data: dataUniswap } = useSearchUniswapTokenQuery()
 	const { chainId } = useWeb3React()
-	// 0xdac17f958d2ee523a2206206994597c13d831ec7
-	// 0x1b4dd5ea240732ddac8d74fd1cd9026addc02e3c
 
 	const [isLoadingToken, toggleLoadingToken, finishedLoadingToken] = useToggle()
 
@@ -255,7 +220,7 @@ export function useSearchTokenUniswap(value: string) {
 
 	const isLoading = isLoadingToken || isLoadingQuery
 
-	// console.log(userTokens, "user tokens")
+	const defaultTokensBasedChain = chainId ? listDefaultTokens[chainId as keyof typeof listDefaultTokens] : []
 
 	useEffect(() => {
 		searchContract(value)
@@ -348,7 +313,7 @@ export function useSearchTokenUniswap(value: string) {
 					onSuccess: (successMutateData) => {
 						// const arrayOfUserTokens = Object.values(userTokens[chainId as number]) || []
 						// console.log(chainId && Object.values(userTokens[chainId]))
-						return filteredWorker(successMutateData?.tokens, arrayOfUserTokens, defaultTokens, address).then((res) => {
+						return filteredWorker(successMutateData?.tokens, arrayOfUserTokens, defaultTokensBasedChain, address).then((res) => {
 							setTokenList(res)
 							finishedLoadingToken()
 							return res

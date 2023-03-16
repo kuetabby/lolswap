@@ -29,10 +29,10 @@ const AccountWallet: React.FC<Props> = ({ containerClass }) => {
 	const isSupported = !!info
 
 	useEffect(() => {
-		if (isSupported && account) {
+		if (isSupported && account && chainId) {
 			displayBalance(account)
 		}
-	}, [account, isSupported])
+	}, [account, isSupported, chainId])
 
 	const displayBalance = async (acc: string) => {
 		toggleLoadingBalance()

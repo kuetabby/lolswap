@@ -56,7 +56,7 @@ export const AccountInfo: React.FC<Props> = ({ isOpenAccount, toggleOpenAccount 
 	}
 
 	const onDisconnect = () => {
-		if (connector?.deactivate) {
+		if (connector && connector?.deactivate) {
 			void connector.deactivate()
 		} else {
 			void connector.resetState()

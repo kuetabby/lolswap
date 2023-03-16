@@ -8,7 +8,7 @@ import { Chain } from "./@components/Chain"
 import GlobalSetting from "./@components/GlobalSetting"
 import Web3Connect from "./@components/Web3Connect"
 
-import { useCheckNetwork } from "#/shared/hooks/useCheckNetwork"
+// import { useCheckNetwork } from "#/shared/hooks/useCheckNetwork"
 
 import pegasusLogoUrl from "#/assets/logo-pegasus.png"
 
@@ -25,7 +25,7 @@ const Navbar: React.FC<Props> = () => {
 
 	// const sellPageState = useProfilePageState((state) => state.state)
 	// const isNftListV2 = u	seNftListV2Flag() === NftListV2Variant.Enabled
-	useCheckNetwork()
+	// useCheckNetwork()
 
 	return (
 		<Header className="!px-0 !h-20">

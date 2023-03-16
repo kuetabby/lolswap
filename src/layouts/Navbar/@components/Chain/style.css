@@ -19,8 +19,12 @@
 	@apply hover:bg-slate-600;
 }
 
-@media (min-width: 2560px) {
+.chain-dropdown-item {
+	@apply flex w-full justify-between items-center my-1;
+}
+
+@media (min-width: 2048px) {
 	.chain-container {
-		width: 20%;
+		width: 15%;
 	}
 }

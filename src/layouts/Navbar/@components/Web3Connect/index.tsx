@@ -1,4 +1,4 @@
-import React, { useCallback } from "react"
+import React, { useCallback, useEffect } from "react"
 import { useAppDispatch } from "#/redux/store"
 import { useWeb3React } from "@web3-react/core"
 import { Connector } from "@web3-react/types"
@@ -10,6 +10,7 @@ import useToggle from "#/shared/hooks/useToggle"
 
 import { getConnection } from "#/@app/utility/Connection/utils"
 import { SelectWallet } from "./SelectWallet"
+import { networkConnection } from "#/features/Swap/@utils/connectors/network"
 
 import { updateConnectionError } from "#/redux/slices/Connection"
 import { updateSelectedWallet } from "#/redux/slices/User"
@@ -24,8 +25,14 @@ const Web3Connect: React.FC<Props> = ({ containerClass }) => {
 	const [isOpenWallet, toggleWallet, closeWallet] = useToggle()
 	const [isPending, togglePending, closePending] = useToggle()
 
-	const { chainId } = useWeb3React()
+	const { chainId, connector } = useWeb3React()
 	const dispatch = useAppDispatch()
+
+	useEffect(() => {
+		if (chainId && connector !== networkConnection.connector) {
+			networkConnection.connector.activate(chainId)
+		}
+	}, [chainId, connector])
 
 	const tryActivation = useCallback(
 		async (connector: Connector) => {
@@ -40,15 +47,16 @@ const Web3Connect: React.FC<Props> = ({ containerClass }) => {
 
 			try {
 				dispatch(updateConnectionError({ connectionType, error: undefined }))
-				await connector.provider?.request({
-					method: "wallet_switchEthereumChain",
-					params: [
-						{
-							chainId: "0x1",
-						},
-					],
-				})
-				await connector.activate()
+				// await connector.provider?.request({
+				// 	method: "wallet_switchEthereumChain",
+				// 	params: [
+				// 		{
+				// 			chainId: `0x${chainId}`,
+				// 		},
+				// 	],
+				// })
+				// console.log("active error")
+				await connector.activate(chainId)
 				dispatch(updateSelectedWallet({ wallet: connectionType }))
 				closeWallet()
 			} catch (error) {
