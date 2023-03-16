@@ -1,7 +1,7 @@
 import { TokenInfo } from "@uniswap/token-lists"
 
 import { store } from "#/redux/store"
-import { UNI_EXTENDED_LIST, UNI_LIST, UNSUPPORTED_LIST_URLS } from "./lists"
+import { UNI_EXTENDED_LIST, UNI_LIST, UNSUPPORTED_LIST_URLS } from "./listsUrls"
 import { brokenList } from "./lists.broken"
 
 export const NATIVE_CHAIN_ID = "NATIVE"
