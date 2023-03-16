@@ -13,6 +13,7 @@ const initialState: ApplicationState = {
 	chainId: null,
 	openModal: false,
 	popupList: [],
+	isSwitchChain: false,
 }
 
 export const applicationSlice = createSlice({
@@ -32,6 +33,12 @@ export const applicationSlice = createSlice({
 			return {
 				...state,
 				chainId: action.payload.chainId,
+			}
+		},
+		toggleSwitchChain: (state, action: PayloadAction<boolean>) => {
+			return {
+				...state,
+				isSwitchChain: action.payload,
 			}
 		},
 		setOpenModal: (state) => {
@@ -87,5 +94,13 @@ export const applicationSlice = createSlice({
 	},
 })
 
-export const { addPopup, removePopup, setFiatOnrampAvailability, setOpenModal, setToggleModal, setCloseModal, updateChainId } =
-	applicationSlice.actions
+export const {
+	addPopup,
+	removePopup,
+	setFiatOnrampAvailability,
+	setOpenModal,
+	setToggleModal,
+	setCloseModal,
+	updateChainId,
+	toggleSwitchChain,
+} = applicationSlice.actions

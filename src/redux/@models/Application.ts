@@ -43,4 +43,5 @@ export interface ApplicationState {
 	readonly fiatOnramp: { available: boolean; availabilityChecked: boolean }
 	readonly openModal: boolean
 	readonly popupList: PopupList
+	readonly isSwitchChain: boolean
 }

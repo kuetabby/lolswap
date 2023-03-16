@@ -156,5 +156,6 @@ export const {
 	setGasPriceAmount,
 	setTokenAmount,
 	setTokenBalance,
+	resetTrade,
 	resetGasPriceAmount,
 } = swapSlice.actions

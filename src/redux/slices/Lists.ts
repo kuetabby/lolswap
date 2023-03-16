@@ -5,7 +5,7 @@ import {
 	// VersionUpgrade
 } from "@uniswap/token-lists"
 
-import { DEFAULT_LIST_OF_LISTS } from "#/@app/utility/Token/lists"
+import { DEFAULT_LIST_OF_LISTS } from "#/@app/utility/Token/listsUrls"
 // import { updateVersion } from '../global/actions'
 // import { acceptListUpdate, addList, fetchTokenList, removeList } from './actions'
 
