@@ -33,6 +33,10 @@
 	transition: 250;
 }
 
+.custom-list-container {
+	@apply !overflow-x-hidden;
+}
+
 .custom-list-container::-webkit-scrollbar {
 	width: 5px;
 }

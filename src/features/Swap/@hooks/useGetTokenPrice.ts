@@ -1,3 +1,4 @@
+import { useWeb3React } from "@web3-react/core"
 import { useQuery } from "react-query"
 import axios, { AxiosError } from "axios"
 import { message } from "antd"
@@ -77,9 +78,11 @@ const get1inchPrice = async (url: string) => {
 	return response
 }
 
-export const get1inchSwap = async (params: Swap1inchParams) => {
+export const get1inchSwap = async (chainId: number = 1, params: Swap1inchParams) => {
 	try {
-		const request = await axios.get<Swap1inchResponse>(`https://api.1inch.io/v5.0/1/swap?${new URLSearchParams(params).toString()}`)
+		const request = await axios.get<Swap1inchResponse>(
+			`https://api.1inch.io/v5.0/${chainId}/swap?${new URLSearchParams(params).toString()}`
+		)
 		const response = await request.data
 		return response
 	} catch (error) {
@@ -99,11 +102,12 @@ export const get1inchSwap = async (params: Swap1inchParams) => {
 export function useGet1inchTokenPrice({ fromToken, toToken, sellAmount }: CustomGetPriceParams) {
 	const signTransaction = useAllowExchange()
 
+	const { chainId } = useWeb3React()
 	const dispatch = useAppDispatch()
 
 	const amount = String(sellAmount).split(".").join("")
 
-	const url = `https://api.1inch.io/v5.0/1/quote?fromTokenAddress=${fromToken}&toTokenAddress=${toToken}&amount=${amount}`
+	const url = `https://api.1inch.io/v5.0/${chainId}/quote?fromTokenAddress=${fromToken}&toTokenAddress=${toToken}&amount=${amount}`
 
 	return useQuery<Swap1inchPrice, AxiosError<ErrorResponse>>([url], async () => get1inchPrice(url), {
 		refetchOnMount: true,

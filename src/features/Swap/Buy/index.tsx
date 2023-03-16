@@ -55,7 +55,7 @@ const BuyCard: React.FC<Props> = ({ data, isFetching }) => {
 							{currentTrade.id && (
 								<>
 									<TokenImage
-										src={data?.toToken.logoURI || currentTrade.logoURI || `https://tokens.1inch.io/${currentTrade.id}.png`}
+										src={currentTrade.logoURI || data?.toToken.logoURI || `https://tokens.1inch.io/${currentTrade.id}.png`}
 										alt={currentTrade.id}
 									/>
 									<span className="buy-name-token">{currentTrade.symbol}</span>

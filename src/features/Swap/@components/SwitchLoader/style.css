@@ -1,0 +1,26 @@
+.switch-loader-container {
+	width: 100%;
+	height: 75vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.switch-image {
+	@apply w-52 h-52 m-auto object-contain;
+	transform-origin: center;
+	animation: breathing-animation 2s ease-in-out infinite;
+}
+
+@keyframes breathing-animation {
+	0% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(1.2);
+	}
+	100% {
+		transform: scale(1);
+	}
+}

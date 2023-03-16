@@ -10,6 +10,7 @@ import SellCard from "./Sell"
 import GasPrice from "./GasPrice"
 import HeaderSwapButton from "./Header"
 import { FooterSwapButton } from "./Footer"
+import SwitchLoader from "./@components/SwitchLoader"
 
 import { get1inchSwap, useGet1inchTokenPrice } from "#/features/Swap/@hooks/useGetTokenPrice"
 import { useAllowance, useSpenderAllowance, usePermitAllowance } from "./@hooks/useAllowance"
@@ -25,6 +26,7 @@ interface Props {}
 const Swap: React.FC<Props> = () => {
 	const { from: currentSellToken, to: currentBuyToken } = useAppSelector((state) => state.swapTransaction)
 	const { slippageAmount } = useAppSelector((state) => state.user)
+	const { isSwitchChain } = useAppSelector((state) => state.application)
 
 	const numericCurrentDecimal = +currentSellToken.decimals
 	const currentSellAmount = +currentSellToken.amount
@@ -32,7 +34,7 @@ const Swap: React.FC<Props> = () => {
 	const calculatedCurrentAmount = debounceCurrentAmount * 10 ** numericCurrentDecimal
 	const stringifyCurrentAmount = calculatedCurrentAmount.toLocaleString().split(",").join("")
 
-	const { account, provider } = useWeb3React()
+	const { account, provider, chainId } = useWeb3React()
 	const dispatch = useAppDispatch()
 
 	const signer = provider?.getSigner(account)
@@ -70,7 +72,7 @@ const Swap: React.FC<Props> = () => {
 		if (isSuccessPrice && dataAllowance?.allowance && account) {
 			toggleLoadingSwap()
 			try {
-				const requestSwap = await get1inchSwap({
+				const requestSwap = await get1inchSwap(chainId, {
 					amount: data1inch?.fromTokenAmount,
 					fromAddress: account,
 					fromTokenAddress: data1inch?.fromToken.address,
@@ -122,6 +124,10 @@ const Swap: React.FC<Props> = () => {
 				}
 			})
 		}
+	}
+
+	if (isSwitchChain) {
+		return <SwitchLoader />
 	}
 
 	return (

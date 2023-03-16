@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useWeb3React, Web3ReactHooks } from "@web3-react/core"
 
 import { BigNumber } from "@ethersproject/bignumber"
@@ -40,21 +40,21 @@ export async function isNativeToken(provider?: ReturnType<Web3ReactHooks["usePro
 }
 
 export const useBalanceTokenBased = (token: BaseSwapState, isSupported: boolean) => {
-	const { provider, account } = useWeb3React()
+	const { provider, chainId, account } = useWeb3React()
 
 	const [balance, setBalance] = useState("0")
 
 	const [isLoading, toggleLoading] = useToggle()
 
 	useEffect(() => {
-		if (isSupported && account) {
+		if (isSupported && account && Boolean(token.id)) {
 			checkToken()
 		}
 
-		if (!isSupported || !account) {
+		if (!isSupported || !account || !Boolean(token.id)) {
 			setBalance("0")
 		}
-	}, [isSupported, account, token.id])
+	}, [isSupported, account, token, chainId])
 
 	const checkToken = async () => {
 		const checkIsNative = await isNativeToken(provider, token.id)
@@ -87,7 +87,7 @@ export const useBalanceTokenBased = (token: BaseSwapState, isSupported: boolean)
 		}
 	}
 
-	return [balance, isLoading] as const
+	return useMemo(() => [balance, isLoading] as const, [])
 }
 
 type NativeBalanceParams = {
