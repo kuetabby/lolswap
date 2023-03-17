@@ -5,10 +5,12 @@
 import "./App.css"
 
 import AppLayout from "./layouts"
+import { useStoreToken } from "./shared/hooks/useSessionToken"
 
 // import { setFromTradeAddress } from "#/redux/slices/Swap"
 
 function App() {
+	useStoreToken()
 	// const { account } = useWeb3React()
 
 	// const dispatch = useAppDispatch()

@@ -6,6 +6,7 @@ import { useWeb3React } from "@web3-react/core"
 
 import { AddressZero, BaseToken, TokenUniswap } from "#/layouts/Navbar/@hooks/useSearchTokens"
 import { useGetToken } from "./useGetToken"
+import { useStoreToken, useSessionToken } from "#/shared/hooks/useSessionToken"
 import useToggle from "./useToggle"
 
 import { isAddress } from "#/@app/utility/Address"
@@ -67,23 +68,30 @@ export function useSearchTokens(value: string) {
 	const { tokens: userTokens } = useAppSelector((state) => state.user)
 
 	const [tokenList, setTokenList] = useState<TokenUniswap[]>([])
-
-	const { isLoading: isLoadingQuery, mutate, data: dataUniswap } = useSearchUniswapTokenQuery()
-	const [searchContractAddress] = useGetToken(value)
+	const [sizeData, setSizeData] = useState(50)
 
 	const { chainId } = useWeb3React()
 
+	// const { isLoading: isLoadingQuery, mutate, data: dataUniswap } = useSearchUniswapTokenQuery()
+	const { isFetching } = useStoreToken()
+
+	const [searchContractAddress] = useGetToken(value)
 	const [isLoadingToken, toggleLoadingToken, finishedLoadingToken] = useToggle()
 
-	const isLoading = isLoadingToken || isLoadingQuery
+	const isLoading = isLoadingToken || isFetching
 
 	const defaultTokens = chainId ? listDefaultTokens[chainId] : []
+	const sessionTokens = useSessionToken()
 
 	useEffect(() => {
 		if (chainId) {
 			searchContract(value, chainId)
 		}
 	}, [value, chainId])
+
+	const loadMoreToken = () => {
+		setSizeData((state) => state + 100)
+	}
 
 	const arrayOfUserTokens = useMemo(() => {
 		if (chainId && typeof userTokens[chainId] !== "undefined") {
@@ -115,17 +123,18 @@ export function useSearchTokens(value: string) {
 		} else if (isValidAddress) {
 			return searchTokenByAddress(query)
 		} else {
-			return mutate(
-				{ name: query, id },
-				{
-					onError: () => {
-						searchTokenByName(query, [])
-					},
-					onSuccess: (data) => {
-						searchTokenByName(query, data?.tokens)
-					},
-				}
-			)
+			return searchTokenByName(query)
+			// return mutate(
+			// 	{ name: query, id },
+			// 	{
+			// 		onError: () => {
+			// 			searchTokenByName(query, [])
+			// 		},
+			// 		onSuccess: (data) => {
+			// 			searchTokenByName(query, data?.tokens)
+			// 		},
+			// 	}
+			// )
 		}
 	}
 
@@ -154,16 +163,15 @@ export function useSearchTokens(value: string) {
 			})
 	}
 
-	const searchTokenByName = (query: string, tokens: TokenUniswap[]) => {
+	const searchTokenByName = (query: String) => {
 		const storageToken = arrayOfUserTokens
-		const uniswapToken = tokens ?? []
-		const combinedToken = [...defaultTokens, ...storageToken, ...uniswapToken]
-
+		const combinedToken = [...defaultTokens, ...storageToken, ...sessionTokens]
 		if (!query) {
 			setTokenList(combinedToken)
 			finishedLoadingToken()
-			return uniswapToken
+			return sessionTokens
 		}
+
 		const findName = combinedToken.filter((item) => item.name?.toLocaleLowerCase().includes(query.toLowerCase()))
 		if (findName.length) {
 			setTokenList(findName)
@@ -179,7 +187,7 @@ export function useSearchTokens(value: string) {
 	const validatingToken = useCallback(
 		(address: string) => {
 			const storageToken = arrayOfUserTokens
-			const uniswapToken: BaseToken[] = dataUniswap?.tokens ?? []
+			const uniswapToken: BaseToken[] = sessionTokens
 			const combinedToken = [...defaultTokens, ...storageToken, ...uniswapToken]
 
 			const token = combinedToken.find((item) => item.id.toLowerCase() === address.toLowerCase())
@@ -188,10 +196,10 @@ export function useSearchTokens(value: string) {
 			}
 			return false
 		},
-		[arrayOfUserTokens, dataUniswap?.tokens, defaultTokens]
+		[arrayOfUserTokens, sessionTokens, defaultTokens]
 	)
 
-	return [cachedToken, isLoading, validatingToken] as const
+	return [cachedToken, isLoading, validatingToken, sizeData, loadMoreToken] as const
 }
 
 export function useSearchByAddress(value: string) {
