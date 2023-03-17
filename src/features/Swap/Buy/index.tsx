@@ -22,7 +22,7 @@ interface Props {
 }
 
 const BuyCard: React.FC<Props> = ({ data, isFetching }) => {
-	const { chainId } = useWeb3React()
+	const { chainId, account } = useWeb3React()
 
 	const currentTrade = useAppSelector((state) => state.swapTransaction.to)
 
@@ -31,7 +31,7 @@ const BuyCard: React.FC<Props> = ({ data, isFetching }) => {
 
 	const [isSearchToken, toggleSearchToken] = useToggle()
 
-	const [balance, isLoadingBalance] = useBalanceTokenBased(currentTrade, isSupported)
+	const [balance, isLoadingBalance] = useBalanceTokenBased(currentTrade)
 
 	return (
 		<>
@@ -45,7 +45,9 @@ const BuyCard: React.FC<Props> = ({ data, isFetching }) => {
 						<p className="buy-text-info">You Buy</p>
 						<div className="buy-text-balance">
 							{isLoadingBalance && <Spin className="mx-1" />}
-							{!isLoadingBalance && <div className="font-semibold text-right w-36 mr-1">Balance: {isSupported ? balance : 0}</div>}
+							{!isLoadingBalance && (
+								<div className="font-semibold text-right w-36 mr-1">Balance: {isSupported && !!account ? balance : 0}</div>
+							)}
 							{/* <div className="text-blue-500 cursor-pointer hover:bg-blue-400 hover:text-white px-1">MAX</div> */}
 						</div>
 					</div>

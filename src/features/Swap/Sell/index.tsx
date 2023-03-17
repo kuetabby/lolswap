@@ -19,7 +19,7 @@ import "./style.css"
 interface Props {}
 
 const SellCard: React.FC<Props> = () => {
-	const { chainId } = useWeb3React()
+	const { chainId, account } = useWeb3React()
 
 	const currentTrade = useAppSelector((state) => state.swapTransaction.from)
 
@@ -28,7 +28,7 @@ const SellCard: React.FC<Props> = () => {
 	const info = chainId ? getChainInfo(chainId) : undefined
 	const isSupported = !!info
 
-	const [balance, isLoadingBalance] = useBalanceTokenBased(currentTrade, isSupported)
+	const [balance, isLoadingBalance] = useBalanceTokenBased(currentTrade)
 
 	const dispatch = useAppDispatch()
 
@@ -54,7 +54,9 @@ const SellCard: React.FC<Props> = () => {
 						<p className="sell-text-info">You Sell</p>
 						<div className="sell-text-balance">
 							{isLoadingBalance && <Spin className="mx-1" />}
-							{!isLoadingBalance && <div className="font-semibold text-right w-36 mr-1">Balance: {isSupported ? balance : 0}</div>}
+							{!isLoadingBalance && (
+								<div className="font-semibold text-right w-36 mr-1">Balance: {isSupported && !!account ? balance : 0}</div>
+							)}
 							{/* <div className="text-blue-500 cursor-pointer hover:bg-blue-400 hover:text-white px-1">MAX</div> */}
 						</div>
 					</div>
