@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import { useWeb3React } from "@web3-react/core"
 import { useAppSelector, useAppDispatch } from "#/redux/store"
+// import InfiniteScroll from "react-infinite-scroll-component"
+import VirtualList from "rc-virtual-list"
 import { Modal, Input, List, Button, InputRef } from "antd"
 import { SearchOutlined } from "@ant-design/icons"
 
@@ -37,18 +39,18 @@ const initialConfirmationToken: TokenUniswap = {
 	symbol: "",
 }
 
+const scrollHeight = 400
+
 const SelectToken: React.FC<Props> = ({ closeModal, isOpen, type }) => {
+	const { from: currentTrade, to: destinationTrade } = useAppSelector((state) => state.swapTransaction)
+
 	const [searchValue, setSearchValue] = useState("")
 	const [confirmationToken, setConfirmationToken] = useState(initialConfirmationToken)
 
-	const { from: currentTrade, to: destinationTrade } = useAppSelector((state) => state.swapTransaction)
-
 	const debouncedValue = useDebounce(searchValue, 1000)
 
-	const [data, isLoadingData, validatingListToken] = useSearchTokens(debouncedValue)
-
+	const [data, isLoadingData, validatingListToken, sizeData, loadMoreToken] = useSearchTokens(debouncedValue)
 	const [isOpenConfirmation, toggleConfirmation, closeConfirmation] = useToggle()
-	// const { mutate } = useExchangeToken()
 
 	const dispatch = useAppDispatch()
 	const { chainId } = useWeb3React()
@@ -139,7 +141,11 @@ const SelectToken: React.FC<Props> = ({ closeModal, isOpen, type }) => {
 		closeModal()
 	}
 
-	// console.log(dataSource, "data source")
+	const onScroll = (e: React.UIEvent<HTMLElement, UIEvent>) => {
+		if (e.currentTarget.scrollHeight - e.currentTarget.scrollTop === scrollHeight) {
+			loadMoreToken()
+		}
+	}
 
 	return (
 		<>
@@ -159,13 +165,17 @@ const SelectToken: React.FC<Props> = ({ closeModal, isOpen, type }) => {
 					ref={tokenInput}
 					placeholder="Search by name or paste address"
 				/>
-				<List
-					loading={isLoadingData}
-					dataSource={data as TokenUniswap[]}
-					className="custom-list-container"
-					style={{ maxHeight: "350px", overflow: "auto" }}
-					renderItem={(item: TokenUniswap, i) => {
-						return (
+				<List loading={isLoadingData}>
+					<VirtualList
+						data={data.slice(0, sizeData)}
+						height={scrollHeight}
+						itemHeight={40}
+						itemKey="id"
+						onScroll={onScroll}
+						className="custom-list-container"
+						style={{ overflow: "auto", maxHeight: "400px" }}
+					>
+						{(item: TokenUniswap, i) => (
 							<List.Item className="custom-list-item" onClick={() => onSelectToken(item)}>
 								<List.Item.Meta
 									className="!items-center"
@@ -187,9 +197,9 @@ const SelectToken: React.FC<Props> = ({ closeModal, isOpen, type }) => {
 									description={<div className="text-white">{item.symbol}</div>}
 								/>
 							</List.Item>
-						)
-					}}
-				/>
+						)}
+					</VirtualList>
+				</List>
 			</Modal>
 			{isOpenConfirmation && (
 				<Confirmation
