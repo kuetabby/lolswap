@@ -85,7 +85,7 @@ export function useSearchTokens(value: string) {
 
 	useEffect(() => {
 		if (chainId) {
-			searchContract(value, chainId)
+			searchContract(value)
 		}
 	}, [value, chainId])
 
@@ -110,7 +110,7 @@ export function useSearchTokens(value: string) {
 		return uniqueTokens
 	}, [tokenList])
 
-	const searchContract = async (query: string, id: number) => {
+	const searchContract = async (query: string) => {
 		const isValidAddress = await isAddress(query)
 		const isZeroAddress = (await query) === AddressZero
 
