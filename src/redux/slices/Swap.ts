@@ -5,7 +5,7 @@ import { SwapState, BaseSwapState } from "../@models/Swap"
 import { defaultCollection } from "#/@app/utility/Collection"
 
 const initialFromState = {
-	...defaultCollection,
+	...defaultCollection[1],
 	amount: "",
 }
 
@@ -133,8 +133,14 @@ export const swapSlice = createSlice({
 				},
 			}
 		},
-		resetTrade: () => {
-			return initialState
+		resetTrade: (_, action: PayloadAction<number>) => {
+			return {
+				...initialState,
+				from: {
+					...defaultCollection[action.payload],
+					amount: "",
+				},
+			}
 		},
 		resetGasPriceAmount: (state) => {
 			return {
