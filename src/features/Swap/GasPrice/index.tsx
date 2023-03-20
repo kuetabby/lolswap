@@ -3,10 +3,10 @@ import { useAppSelector } from "#/redux/store"
 import { Card, Tooltip } from "antd"
 // import { DownOutlined } from "@ant-design/icons"
 
-import { useGetETHPrice } from "#/shared/hooks/useGetETHPrice"
+import { useGetGasPrice } from "#/shared/hooks/useGetGasCost"
+import { useGetTokenAggregator } from "../@hooks/useGetTokenPriceAggregator"
 
 import type { Swap1inchPrice } from "#/redux/@models/Swap"
-import { useGetTokenAggregator } from "../@hooks/useGetTokenPriceAggregator"
 
 interface Props {
 	data?: Swap1inchPrice
@@ -18,7 +18,7 @@ const GasPrice: React.FC<Props> = ({ data }) => {
 	const { gasPrice } = requirement
 	const gasLimit = data?.estimatedGas || 0
 
-	const [gasCost, isFetching] = useGetETHPrice({ gasPrice, gasLimit })
+	const [gasCost, isFetching] = useGetGasPrice({ gasPrice, gasLimit })
 	const [formattedPrice] = useGetTokenAggregator()
 
 	const text = `${"1 " + toTrade.symbol + " = " + formattedPrice ?? "-"} ${fromTrade.symbol}`

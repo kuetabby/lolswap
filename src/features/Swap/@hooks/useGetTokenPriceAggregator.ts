@@ -9,11 +9,13 @@ import { SupportedChainId } from "#/shared/constants/chains"
 const offChainOracleAddress = {
 	[SupportedChainId.MAINNET]: "0x07D91f5fb9Bf7798734C3f606dB065549F6893bb",
 	[SupportedChainId.ARBITRUM_ONE]: "0x735247fb0a604c0adC6cab38ACE16D0DbA31295F",
+	[SupportedChainId.BNB]: "0xfbD61B037C325b959c0F6A7e69D8f37770C2c550",
 }
 
 const nativeCurrencySymbol = {
 	[SupportedChainId.MAINNET]: ["ETH", "WETH"],
 	[SupportedChainId.ARBITRUM_ONE]: ["ETH", "WETH"],
+	[SupportedChainId.BNB]: ["BNB", "WBNB"],
 }
 
 export const useGetTokenAggregator = () => {
@@ -23,13 +25,13 @@ export const useGetTokenAggregator = () => {
 
 	const { provider, chainId } = useWeb3React()
 
-	const isFromNative = chainId
-		? nativeCurrencySymbol[chainId as keyof typeof nativeCurrencySymbol].includes(fromTrade?.symbol ?? "")
-		: false
-	const isToNative = chainId
-		? nativeCurrencySymbol[chainId as keyof typeof nativeCurrencySymbol].includes(toTrade?.symbol ?? "")
-		: false
-	const isNativeToken = isFromNative && isToNative
+	const isNative = chainId && nativeCurrencySymbol[chainId as keyof typeof nativeCurrencySymbol]
+
+	const isFromNative =
+		!!isNative && nativeCurrencySymbol[chainId as keyof typeof nativeCurrencySymbol]?.includes(fromTrade?.symbol ?? "")
+	const isToNative = !!isNative && nativeCurrencySymbol[chainId as keyof typeof nativeCurrencySymbol]?.includes(toTrade?.symbol ?? "")
+
+	const isNativeToNative = isFromNative && isToNative
 	const isEthers = isFromNative || isToNative
 
 	useEffect(() => {
@@ -40,7 +42,7 @@ export const useGetTokenAggregator = () => {
 
 	const findBestRate = () => {
 		if (fromTrade.id && toTrade.id) {
-			if (isNativeToken) {
+			if (isNativeToNative) {
 				setTrxRate("1")
 			} else if (isEthers) {
 				const address = isToNative ? fromTrade?.id : toTrade.id

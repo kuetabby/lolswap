@@ -1,4 +1,5 @@
-import { SupportedChainId } from "@uniswap/sdk-core"
+import { SupportedChainId } from "#/shared/constants/chains"
+import { FALLBACK_URLS } from "#/shared/constants/networks"
 
 import type { AddEthereumChainParameter } from "@web3-react/types"
 import type { BasicChainInformation, ExtendedChainInformation, UrlsInformation } from "../@models/chain"
@@ -21,7 +22,14 @@ const CELO: AddEthereumChainParameter["nativeCurrency"] = {
 	decimals: 18,
 }
 
+const BNB: AddEthereumChainParameter["nativeCurrency"] = {
+	name: "Binance",
+	symbol: "BNB",
+	decimals: 18,
+}
+
 const INFURA_KEY = import.meta.env.VITE_INFURA_KEY
+const QUICKNODE_KEY = import.meta.env.VITE_QUICKNODE_KEY
 // const ALCHEMY_KEY = import.meta.env.VITE_ALCHEMY_KEY
 
 function isExtendedChainInformation(
@@ -33,8 +41,9 @@ function isExtendedChainInformation(
 export function getAddChainParameters(chainId: number): AddEthereumChainParameter | number {
 	const chainInformation = CHAINS[chainId]
 	if (isExtendedChainInformation(chainInformation)) {
+		const hexChain = `0x${Number(chainId).toString(16)}`
 		return {
-			chainId,
+			chainId: +hexChain,
 			chainName: chainInformation.name,
 			nativeCurrency: chainInformation.nativeCurrency,
 			rpcUrls: chainInformation.urls,
@@ -52,6 +61,7 @@ export const CHAINS: { [chainId: number]: BasicChainInformation | ExtendedChainI
 			// ALCHEMY_KEY ? `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}` : "",
 			"https://cloudflare-eth.com",
 		].filter((url) => url !== ""),
+		nativeCurrency: ETH,
 		name: "Mainnet",
 	},
 	[SupportedChainId.ROPSTEN]: {
@@ -132,6 +142,15 @@ export const CHAINS: { [chainId: number]: BasicChainInformation | ExtendedChainI
 		name: "Celo Alfajores",
 		nativeCurrency: CELO,
 		blockExplorerUrls: ["https://alfajores-blockscout.celo-testnet.org"],
+	},
+	[SupportedChainId.BNB]: {
+		urls: [
+			QUICKNODE_KEY ? `https://attentive-convincing-sanctuary.bsc.discover.quiknode.pro/${QUICKNODE_KEY}` : "",
+			...FALLBACK_URLS[SupportedChainId.BNB],
+		].filter((url) => url !== ""),
+		name: "Binance",
+		nativeCurrency: BNB,
+		blockExplorerUrls: ["https://bscscan.com"],
 	},
 }
 
