@@ -5,6 +5,7 @@ import { networkConnection } from "#/features/Swap/@utils/connectors/network"
 import { walletConnectConnection } from "#/features/Swap/@utils/connectors/walletConnect"
 // import { getChainInfo, L1ChainInfo } from "#/shared/constants/chainInfo"
 import { isSupportedChain, SupportedChainId } from "#/shared/constants/chains"
+import { getAddChainParameters } from "#/features/Swap/@utils/chain"
 // import { FALLBACK_URLS, RPC_URLS } from "#/shared/constants/networks"
 // import { getAddChainParameters } from "#/features/Swap/@utils/chain"
 
@@ -28,9 +29,9 @@ export const switchChain = async (connector: Connector, chainId: SupportedChainI
 	if (!isSupportedChain(chainId)) {
 		throw new Error(`Chain ${chainId} not supported for connector (${typeof connector})`)
 	} else if (connector === walletConnectConnection.connector || connector === networkConnection.connector) {
-		await connector.activate(chainId)
-	} else {
 		await connector.activate(+chainId)
+	} else {
+		await connector.activate(getAddChainParameters(Number(chainId)))
 		// const info = getChainInfo(chainId)
 		// console.log(getAddChainParameters(chainId))
 		// console.log(+chainId === -1, "chainId")

@@ -4,6 +4,7 @@ import { SupportedChainId } from "#/shared/constants/chains"
 
 import ethereumLogoUrl from "#/assets/ethereum-logo.png"
 import wethLogoUrl from "#/assets/weth-logo.png"
+import binanceLogoUrl from "#/assets/bnb-logo.webp"
 
 const nativeEth = {
 	id: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
@@ -11,6 +12,14 @@ const nativeEth = {
 	logoURI: ethereumLogoUrl,
 	name: "Ethereum",
 	symbol: "ETH",
+}
+
+const nativeBnb = {
+	id: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+	decimals: "18",
+	logoURI: binanceLogoUrl,
+	name: "Binance",
+	symbol: "BNB",
 }
 
 export type ListDefaultTokens = { readonly [chainId: number]: TokenUniswap[] }
@@ -41,6 +50,16 @@ export const listDefaultTokens: ListDefaultTokens = {
 			logoURI: wethLogoUrl,
 			name: "Wrapped Ether",
 			symbol: "WETH",
+		},
+	],
+	[SupportedChainId.BNB]: [
+		nativeBnb,
+		{
+			id: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c",
+			decimals: "18",
+			logoURI: binanceLogoUrl,
+			name: "Wrapped BNB",
+			symbol: "WBNB",
 		},
 	],
 }
