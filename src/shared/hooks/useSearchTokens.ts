@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
-import axios from "axios"
-import { useMutation } from "react-query"
+// import axios from "axios"
+// import { useMutation } from "react-query"
 import { useAppSelector } from "#/redux/store"
 import { useWeb3React } from "@web3-react/core"
 
@@ -10,59 +10,59 @@ import { useStoreToken, useSessionToken } from "#/shared/hooks/useSessionToken"
 import useToggle from "./useToggle"
 
 import { isAddress } from "#/@app/utility/Address"
-import { SupportedChainId } from "../constants/chains"
+// import { SupportedChainId } from "../constants/chains"
 import { listDefaultTokens } from "#/@app/utility/Token/listsTokens"
 
-const clientSubgraph = {
-	[SupportedChainId.MAINNET]: "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3",
-	[SupportedChainId.ARBITRUM_ONE]: "https://api.thegraph.com/subgraphs/name/messari/uniswap-v3-arbitrum",
-}
+// const clientSubgraph = {
+// 	[SupportedChainId.MAINNET]: "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3",
+// 	[SupportedChainId.ARBITRUM_ONE]: "https://api.thegraph.com/subgraphs/name/messari/uniswap-v3-arbitrum",
+// }
 
-const useSearchUniswapTokenQuery = () => {
-	return useMutation(
-		async ({ name, id }: { name: string; id: number }) => {
-			const customQuery = name && `where: { name_contains_nocase: $searchQuery}`
+// const useSearchUniswapTokenQuery = () => {
+// 	return useMutation(
+// 		async ({ name, id }: { name: string; id: number }) => {
+// 			const customQuery = name && `where: { name_contains_nocase: $searchQuery}`
 
-			const customGraph = {
-				[SupportedChainId.MAINNET]: `
-				query searchTokens($searchQuery: String!) {
-					tokens(first: 200, orderBy: "volumeUSD", orderDirection: "desc", ${customQuery}) {
-						id
-						name
-						symbol
-						decimals
-						}
-					}`,
-				[SupportedChainId.ARBITRUM_ONE]: `
-				query searchTokens($searchQuery: String!) {
-					tokens(first: 200, orderBy: "lastPriceUSD", orderDirection: "desc", ${customQuery}) {
-						id
-						name
-						symbol
-						decimals
-						}
-					}`,
-			}
+// 			const customGraph = {
+// 				[SupportedChainId.MAINNET]: `
+// 				query searchTokens($searchQuery: String!) {
+// 					tokens(first: 200, orderBy: "volumeUSD", orderDirection: "desc", ${customQuery}) {
+// 						id
+// 						name
+// 						symbol
+// 						decimals
+// 						}
+// 					}`,
+// 				[SupportedChainId.ARBITRUM_ONE]: `
+// 				query searchTokens($searchQuery: String!) {
+// 					tokens(first: 200, orderBy: "lastPriceUSD", orderDirection: "desc", ${customQuery}) {
+// 						id
+// 						name
+// 						symbol
+// 						decimals
+// 						}
+// 					}`,
+// 			}
 
-			const request = await axios<{ data: { tokens: TokenUniswap[] } }>({
-				method: "POST",
-				url: clientSubgraph[id as keyof typeof clientSubgraph],
-				data: JSON.stringify({
-					query: customGraph[id as keyof typeof customGraph],
-					variables: {
-						searchQuery: name,
-					},
-				}),
-			})
-			const response = await request.data
-			const tokens = await response.data
-			return tokens
-		},
-		{
-			retryDelay: 1000,
-		}
-	)
-}
+// 			const request = await axios<{ data: { tokens: TokenUniswap[] } }>({
+// 				method: "POST",
+// 				url: clientSubgraph[id as keyof typeof clientSubgraph],
+// 				data: JSON.stringify({
+// 					query: customGraph[id as keyof typeof customGraph],
+// 					variables: {
+// 						searchQuery: name,
+// 					},
+// 				}),
+// 			})
+// 			const response = await request.data
+// 			const tokens = await response.data
+// 			return tokens
+// 		},
+// 		{
+// 			retryDelay: 1000,
+// 		}
+// 	)
+// }
 
 export function useSearchTokens(value: string) {
 	const { tokens: userTokens } = useAppSelector((state) => state.user)
@@ -108,7 +108,7 @@ export function useSearchTokens(value: string) {
 		}) as TokenUniswap[]
 
 		return uniqueTokens
-	}, [tokenList])
+	}, [tokenList, chainId])
 
 	const searchContract = async (query: string) => {
 		const isValidAddress = await isAddress(query)
@@ -207,20 +207,24 @@ export function useSearchByAddress(value: string) {
 
 	const [tokenList, setTokenList] = useState<TokenUniswap[]>([])
 
-	const { isLoading: isLoadingQuery, mutate, data: dataUniswap } = useSearchUniswapTokenQuery()
+	// const { isLoading: isLoadingQuery, mutate, data: dataUniswap } = useSearchUniswapTokenQuery()
 	const [searchContractAddress] = useGetToken(value)
+
+	const { isFetching } = useStoreToken()
 
 	const { chainId } = useWeb3React()
 
 	const [isLoadingToken, toggleLoadingToken, finishedLoadingToken] = useToggle()
 
-	const isLoading = isLoadingToken || isLoadingQuery
+	// const isLoading = isLoadingToken || isLoadingQuery
+	const isLoading = isLoadingToken || isFetching
 
 	const defaultTokens = chainId ? listDefaultTokens[chainId] : []
+	const sessionTokens = useSessionToken()
 
-	useEffect(() => {
-		mutate({ name: "", id: chainId ?? 0 })
-	}, [])
+	// useEffect(() => {
+	// 	// mutate({ name: "", id: chainId ?? 0 })
+	// }, [])
 
 	useEffect(() => {
 		searchContract(value)
@@ -259,8 +263,8 @@ export function useSearchByAddress(value: string) {
 
 	const searchTokenByAddress = (query: string) => {
 		const storageToken = arrayOfUserTokens
-		const uniswapToken: BaseToken[] = dataUniswap?.tokens ?? []
-		const combinedToken = [...defaultTokens, ...storageToken, ...uniswapToken]
+		// const uniswapToken: BaseToken[] = dataUniswap?.tokens ?? []
+		const combinedToken = [...defaultTokens, ...storageToken, ...sessionTokens]
 
 		const findAddress = combinedToken.find((item) => item.id.toLowerCase() === query.toLowerCase())
 		if (findAddress) {
@@ -286,8 +290,8 @@ export function useSearchByAddress(value: string) {
 	const validatingToken = useCallback(
 		(address: string) => {
 			const storageToken = arrayOfUserTokens
-			const uniswapToken: BaseToken[] = dataUniswap?.tokens ?? []
-			const combinedToken = [...defaultTokens, ...storageToken, ...uniswapToken]
+			// const uniswapToken: BaseToken[] = dataUniswap?.tokens ?? []
+			const combinedToken = [...defaultTokens, ...storageToken, ...sessionTokens]
 
 			const token = combinedToken.find((item) => item.id.toLowerCase() === address.toLowerCase())
 			if (token) {
@@ -295,7 +299,7 @@ export function useSearchByAddress(value: string) {
 			}
 			return false
 		},
-		[arrayOfUserTokens, dataUniswap?.tokens, defaultTokens]
+		[arrayOfUserTokens, sessionTokens, defaultTokens]
 	)
 
 	return [cachedToken, isLoading, validatingToken] as const

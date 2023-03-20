@@ -75,7 +75,7 @@ export const useSessionToken = () => {
 
 	const sessionTokens =
 		chainId && tokensParsed
-			? (Object.values(tokensParsed[chainId]).map((item) => ({
+			? (Object.values(tokensParsed[chainId] ?? []).map((item) => ({
 					id: item.address,
 					decimals: String(item.decimals),
 					name: item.name,
