@@ -43,7 +43,7 @@ export function getAddChainParameters(chainId: number): AddEthereumChainParamete
 	if (isExtendedChainInformation(chainInformation)) {
 		const hexChain = `0x${Number(chainId).toString(16)}`
 		return {
-			chainId: +hexChain,
+			chainId: hexChain as any,
 			chainName: chainInformation.name,
 			nativeCurrency: chainInformation.nativeCurrency,
 			rpcUrls: chainInformation.urls,
