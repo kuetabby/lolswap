@@ -16,7 +16,10 @@ interface ImportMeta {
 interface Window {
 	// walletLinkExtension is injected by the Coinbase Wallet extension
 	walletLinkExtension?: any
-	ethereum: import("ethers").providers.ExternalProvider & { isBraveWallet?: true; isCoinbaseWallet?: true }
+	ethereum: import("ethers").providers.ExternalProvider & {
+		isBraveWallet?: true
+		isCoinbaseWallet?: true
+	}
 	// ethereum?: {
 	// 	// set by the Coinbase Wallet mobile dapp browser
 	// 	isCoinbaseWallet?: true
