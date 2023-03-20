@@ -6,6 +6,7 @@ export enum SupportedChainId {
 	KOVAN = 42,
 
 	ARBITRUM_ONE = 42161,
+	ARBITRUM_RINKEBY = 421611,
 	ARBITRUM_GOERLI = 421613,
 
 	OPTIMISM = 10,
@@ -16,6 +17,8 @@ export enum SupportedChainId {
 
 	CELO = 42220,
 	CELO_ALFAJORES = 44787,
+
+	BNB = 56,
 }
 
 export const CHAIN_IDS_TO_NAMES = {
@@ -29,9 +32,11 @@ export const CHAIN_IDS_TO_NAMES = {
 	[SupportedChainId.CELO]: "celo",
 	[SupportedChainId.CELO_ALFAJORES]: "celo_alfajores",
 	[SupportedChainId.ARBITRUM_ONE]: "arbitrum",
+	[SupportedChainId.ARBITRUM_RINKEBY]: "arbitrum_rinkeby",
 	[SupportedChainId.ARBITRUM_GOERLI]: "arbitrum_goerli",
 	[SupportedChainId.OPTIMISM]: "optimism",
 	[SupportedChainId.OPTIMISM_GOERLI]: "optimism_goerli",
+	[SupportedChainId.BNB]: "binance",
 }
 
 export function isSupportedChain(chainId: number | null | undefined): chainId is SupportedChainId {
@@ -60,3 +65,7 @@ export const L2_CHAIN_IDS = [
 ] as const
 
 export type SupportedL2ChainId = (typeof L2_CHAIN_IDS)[number]
+
+export const BSC_CHAIN_IDS = [SupportedChainId.BNB] as const
+
+export type SupportedBSChainId = (typeof BSC_CHAIN_IDS)[number]

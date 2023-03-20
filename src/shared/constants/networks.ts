@@ -1,6 +1,7 @@
 import { SupportedChainId } from "./chains"
 
 const INFURA_KEY = import.meta.env.VITE_INFURA_KEY
+const QUICKNODE_KEY = import.meta.env.VITE_QUICKNODE_KEY
 
 if (typeof INFURA_KEY === "undefined") {
 	throw new Error(`REACT_APP_INFURA_KEY must be a defined environment variable`)
@@ -60,6 +61,10 @@ export const FALLBACK_URLS: { [key in SupportedChainId]: string[] } = {
 		// "Safe" URLs
 		"https://goerli-rollup.arbitrum.io/rpc",
 	],
+	[SupportedChainId.ARBITRUM_RINKEBY]: [
+		// "Safe" URLs
+		"https://rinkeby.arbitrum.io/rpc",
+	],
 	[SupportedChainId.OPTIMISM]: [
 		// "Safe" URLs
 		"https://mainnet.optimism.io/",
@@ -77,6 +82,12 @@ export const FALLBACK_URLS: { [key in SupportedChainId]: string[] } = {
 	[SupportedChainId.CELO_ALFAJORES]: [
 		// "Safe" URLs
 		`https://alfajores-forno.celo-testnet.org`,
+	],
+	[SupportedChainId.BNB]: [
+		"https://bsc-dataseed.binance.org/",
+		"https://bsc-dataseed1.defibit.io/",
+		"https://bsc-dataseed1.ninicoin.io/",
+		"https://bsc.nodereal.io/",
 	],
 }
 
@@ -99,6 +110,10 @@ export const RPC_URLS: { [key in SupportedChainId]: string[] } = {
 		`https://arbitrum-rinkeby.infura.io/v3/${INFURA_KEY}`,
 		...FALLBACK_URLS[SupportedChainId.ARBITRUM_GOERLI],
 	],
+	[SupportedChainId.ARBITRUM_RINKEBY]: [
+		`https://arbitrum-rinkeby.infura.io/v3/${INFURA_KEY}`,
+		...FALLBACK_URLS[SupportedChainId.ARBITRUM_GOERLI],
+	],
 	[SupportedChainId.POLYGON]: [`https://polygon-mainnet.infura.io/v3/${INFURA_KEY}`, ...FALLBACK_URLS[SupportedChainId.POLYGON]],
 	[SupportedChainId.POLYGON_MUMBAI]: [
 		`https://polygon-mumbai.infura.io/v3/${INFURA_KEY}`,
@@ -106,4 +121,8 @@ export const RPC_URLS: { [key in SupportedChainId]: string[] } = {
 	],
 	[SupportedChainId.CELO]: FALLBACK_URLS[SupportedChainId.CELO],
 	[SupportedChainId.CELO_ALFAJORES]: FALLBACK_URLS[SupportedChainId.CELO_ALFAJORES],
+	[SupportedChainId.BNB]: [
+		`https://attentive-convincing-sanctuary.bsc.discover.quiknode.pro/${QUICKNODE_KEY}`,
+		...FALLBACK_URLS[SupportedChainId.BNB],
+	],
 }

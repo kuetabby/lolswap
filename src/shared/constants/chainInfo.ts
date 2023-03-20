@@ -1,10 +1,11 @@
-import { SupportedChainId, SupportedL1ChainId, SupportedL2ChainId } from "./chains"
+import { SupportedBSChainId, SupportedChainId, SupportedL1ChainId, SupportedL2ChainId } from "./chains"
 
 import ethereumLogoUrl from "#/assets/ethereum-logo.png"
 import optimismLogoUrl from "#/assets/optimistic_ethereum.svg"
 import arbitrumLogoUrl from "#/assets/arbitrum_logo.svg"
 import polygonMaticLogo from "#/assets/polygon-matic-logo.svg"
 import celoLogo from "#/assets/celo_logo.svg"
+import binanceLogo from "#/assets/bnb-logo.webp"
 
 import { ARBITRUM_LIST, CELO_LIST, OPTIMISM_LIST } from "#/@app/utility/Token/listsUrls"
 
@@ -13,6 +14,7 @@ export const AVERAGE_L1_BLOCK_TIME = 12
 export enum NetworkType {
 	L1,
 	L2,
+	BSC,
 }
 
 interface BaseChainInfo {
@@ -47,9 +49,13 @@ export interface L2ChainInfo extends BaseChainInfo {
 	readonly defaultListUrl: string
 }
 
-type ChainInfoMap = { readonly [chainId: number]: L1ChainInfo | L2ChainInfo } & {
+export interface BSChainInfo extends BaseChainInfo {
+	readonly networkType: NetworkType.BSC
+}
+
+type ChainInfoMap = { readonly [chainId: number]: L1ChainInfo | L2ChainInfo | BSChainInfo } & {
 	readonly [chainId in SupportedL2ChainId]: L2ChainInfo
-} & { readonly [chainId in SupportedL1ChainId]: L1ChainInfo }
+} & { readonly [chainId in SupportedL1ChainId]: L1ChainInfo } & { readonly [chainId in SupportedBSChainId]: BSChainInfo }
 
 // type ChainInfoMap = { readonly [chainId: number]: L1ChainInfo } & { readonly [chainId in SupportedL1ChainId]: L1ChainInfo }
 
@@ -217,15 +223,30 @@ const CHAIN_INFO: ChainInfoMap = {
 		defaultListUrl: CELO_LIST,
 		// blockWaitMsBeforeWarning: ms`10m`,
 	},
+	[SupportedChainId.BNB]: {
+		networkType: NetworkType.BSC,
+		docs: "https://docs.bnbchain.org/docs/overview",
+		explorer: "https://bscscan.com",
+		infoLink: "https://info.uniswap.org/#/",
+		label: "BNB Chain",
+		logoUrl: binanceLogo,
+		nativeCurrency: {
+			name: "Binance",
+			symbol: "BNB",
+			decimals: 18,
+		},
+		color: "#F3BA2F",
+	},
 }
 
 // export function getChainInfo(chainId: SupportedChainId | SupportedL1ChainId | number): L1ChainInfo | number | undefined {
 export function getChainInfo(chainId: SupportedL1ChainId): L1ChainInfo
 export function getChainInfo(chainId: SupportedL2ChainId): L2ChainInfo
-export function getChainInfo(chainId: SupportedChainId): L1ChainInfo | L2ChainInfo
+export function getChainInfo(chainId: SupportedChainId): L1ChainInfo | L2ChainInfo | BSChainInfo
+export function getChainInfo(chainId: SupportedBSChainId): BSChainInfo
 export function getChainInfo(
-	chainId: SupportedChainId | SupportedL1ChainId | SupportedL2ChainId | number | undefined
-): L1ChainInfo | L2ChainInfo | undefined
+	chainId: SupportedChainId | SupportedL1ChainId | SupportedL2ChainId | SupportedBSChainId | number | undefined
+): L1ChainInfo | L2ChainInfo | BSChainInfo | undefined
 
 /**
  * Overloaded method for returning ChainInfo given a chainID
