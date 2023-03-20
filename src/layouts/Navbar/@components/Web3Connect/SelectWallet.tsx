@@ -1,6 +1,5 @@
 import React, { useMemo } from "react"
 import { Modal, Card } from "antd"
-import { Connector } from "@web3-react/types"
 
 import AppCard from "#/@app/core/AppCard"
 
@@ -20,7 +19,7 @@ interface Props {
 	isOpenModal: boolean
 	isPending: boolean
 	onCloseModal: () => void
-	tryActivation: (connector: Connector) => Promise<void>
+	tryActivation: (connector: unknown) => void
 }
 
 const { Meta } = Card

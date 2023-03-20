@@ -1,13 +1,14 @@
 import React from "react"
 import { useWeb3React } from "@web3-react/core"
 import { Button, Dropdown, MenuProps } from "antd"
-import { DownOutlined, WarningOutlined } from "@ant-design/icons"
+import { CheckOutlined, DownOutlined, WarningOutlined } from "@ant-design/icons"
+import clsx from "clsx"
 
 import useSelectChain from "../../@hooks/useSelectChain"
 import useToggle from "#/shared/hooks/useToggle"
 
 import { SupportedChainId } from "#/shared/constants/chains"
-import { getChainInfo, L1ChainInfo } from "#/shared/constants/chainInfo"
+import { getChainInfo } from "#/shared/constants/chainInfo"
 
 import "./style.css"
 
@@ -22,6 +23,7 @@ interface MenuInfo {
 
 const NETWORK_SELECTOR_CHAINS = [
 	SupportedChainId.MAINNET,
+	SupportedChainId.BNB,
 	// SupportedChainId.POLYGON,
 	// SupportedChainId.OPTIMISM,
 	SupportedChainId.ARBITRUM_ONE,
@@ -29,45 +31,70 @@ const NETWORK_SELECTOR_CHAINS = [
 ]
 
 export const Chain: React.FC<Props> = () => {
-	const { chainId } = useWeb3React()
-
 	const [isPendingChain, togglePendingChain, finishedPendingChain] = useToggle()
 
+	const { chainId } = useWeb3React()
 	const selectChain = useSelectChain()
 
 	const onSelectChain = async (item: MenuInfo) => {
-		const targetChainId = +item.key as SupportedChainId
 		togglePendingChain()
-		await selectChain(targetChainId)
-		finishedPendingChain()
+		try {
+			const targetChainId = +item.key as SupportedChainId
+			await selectChain(targetChainId)
+		} catch (error) {
+		} finally {
+			finishedPendingChain()
+		}
 	}
 
-	const isChainSupported = (id: number) => {
+	const chainDropdown = (id: number) => {
 		const info = id ? getChainInfo(id) : undefined
 		const isSupported = !!info
 		if (isSupported) {
-			const infoChain = info as L1ChainInfo
+			const infoChain = info
 			return (
 				<div className="chain-dropdown-item">
-					<img src={infoChain.logoUrl} alt={infoChain.label} className="!h-5 !w-5" />
-					<span className="chain-label">{infoChain.label}</span>
+					<img src={infoChain.logoUrl} alt={infoChain.label} className="!h-5 !w-5 mr-2" />
+					<div className={clsx("chain-label", chainId === id ? "!text-white" : "!text-gray-500")}>{infoChain.label}</div>
+					{chainId === id && <CheckOutlined className="!text-blue-500 text-base ml-1" />}
 				</div>
 			)
 		}
 
 		return (
 			<div className="chain-dropdown-item">
-				<WarningOutlined className="!text-red-500 text-base" />
-				<span className="text-red-500 ml-2 leading-5">Unsupported</span>
+				<WarningOutlined className="!text-red-500 text-base mt-1" />
+				<span className="text-red-400 mx-1 leading-5">Unsupported</span>
 			</div>
 		)
 	}
 
 	const chainList: MenuProps["items"] = NETWORK_SELECTOR_CHAINS.map((chain) => ({
 		key: chain,
-		label: isChainSupported(chain),
+		label: chainDropdown(chain),
 		disabled: !getChainInfo(chain),
 	}))
+
+	const chainDisplay = (id: number) => {
+		const info = id ? getChainInfo(id) : undefined
+		const isSupported = !!info
+		if (isSupported) {
+			const infoChain = info
+			return (
+				<div className="chain-display-item">
+					<img src={infoChain.logoUrl} alt={infoChain.label} className="!h-5 !w-5" />
+					<div className="chain-display-label">{infoChain.label}</div>
+				</div>
+			)
+		}
+
+		return (
+			<div className="chain-display-item">
+				<WarningOutlined className="!text-red-500 text-base mt-1" />
+				<span className="text-red-400 mx-1 leading-5">Unsupported</span>
+			</div>
+		)
+	}
 
 	// console.log(`Priority Connector is: ${getName(connector)}`, connector)
 	if (chainId) {
@@ -80,8 +107,8 @@ export const Chain: React.FC<Props> = () => {
 				overlayClassName="chain-dropdown-container"
 			>
 				<Button className="chain-container" shape="round">
-					{isChainSupported(chainId)}
-					<DownOutlined className="mr-1 sm:mr-0 pt-1 text-white" style={{ fontSize: "1.15em", fontWeight: "bold" }} />
+					{chainDisplay(chainId)}
+					<DownOutlined className="mx-1 pt-1 text-white" style={{ fontSize: "1.15em", fontWeight: "bold" }} />
 				</Button>
 			</Dropdown>
 		)

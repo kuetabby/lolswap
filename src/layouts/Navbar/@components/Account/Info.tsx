@@ -87,12 +87,12 @@ export const AccountInfo: React.FC<Props> = ({ isOpenAccount, toggleOpenAccount 
 				</div>
 			}
 		>
-			<div>
-				<div className="flex flex-col justify-center items-center">
-					<div className="font-medium text-sm text-gray-400">ETH Balance</div>
-					{isLoadingBalance && <Spin className="mt-4" />}
-					{!isLoadingBalance && <div className="font-semibold text-3xl text-white">{isSupported ? balance : null} ETH</div>}
-				</div>
+			<div className="flex flex-col justify-center items-center">
+				<div className="font-medium text-sm text-gray-400">{isSupported ? `${info.nativeCurrency.symbol} Balance` : "-"}</div>
+				{isLoadingBalance && <Spin className="mt-4" />}
+				{!isLoadingBalance && (
+					<div className="font-semibold text-3xl text-white">{isSupported ? `${balance} ${info.nativeCurrency.symbol}` : "-"}</div>
+				)}
 			</div>
 		</Modal>
 	)

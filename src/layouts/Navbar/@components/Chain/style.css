@@ -1,5 +1,5 @@
 .chain-container {
-	@apply flex justify-center items-center w-11/12 sm:w-2/4 md:w-5/12 lg:w-1/3 xl:w-1/4 2xl:w-1/5 h-10 px-1 sm:p-3 mr-3 border-none bg-blue-600;
+	@apply flex justify-center items-center w-10/12 sm:w-2/4 md:w-5/12 lg:w-1/3 xl:w-1/4 h-10 px-1 sm:p-3 mr-3 border-none bg-blue-600;
 }
 
 .chain-container:hover {
@@ -7,8 +7,13 @@
 	transition: 250;
 }
 
-.chain-label {
-	@apply mx-2 font-bold text-white text-base flex leading-5;
+.chain-label,
+.chain-display-label {
+	@apply flex mx-2 font-bold text-base leading-5;
+}
+
+.chain-display-label {
+	@apply text-white mr-1;
 }
 
 .chain-dropdown-container > .ant-dropdown-menu.ant-dropdown-menu-root {
@@ -19,8 +24,19 @@
 	@apply hover:bg-slate-600;
 }
 
-.chain-dropdown-item {
-	@apply flex w-full justify-between items-center my-1;
+.chain-dropdown-item,
+.chain-display-item {
+	@apply flex w-full my-1;
+}
+
+.chain-display-item {
+	@apply justify-between items-center;
+}
+
+@media (min-width: theme("screens.2xl")) {
+	.chain-container {
+		width: 22.5%;
+	}
 }
 
 @media (min-width: 2048px) {

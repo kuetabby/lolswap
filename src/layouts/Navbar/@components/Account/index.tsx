@@ -63,7 +63,11 @@ const AccountWallet: React.FC<Props> = ({ containerClass }) => {
 		<>
 			<Button className={clsx("account-container relative", containerClass)} onClick={toggleOpenAccount}>
 				{isLoadingBalance && <Spin className="mt-1 mx-4" />}
-				{!isLoadingBalance && <div className="font-semibold text-base text-white mr-2">{isSupported ? balance : null} ETH</div>}
+				{!isLoadingBalance && (
+					<div className="font-semibold text-base text-white mr-2">
+						{isSupported ? `${balance} ${info?.nativeCurrency.symbol}` : "-"}
+					</div>
+				)}
 				<div className="account-label">{ENSName || shortenAddress(account)}</div>
 			</Button>
 			{isOpenAccount && <AccountInfo isOpenAccount={isOpenAccount} toggleOpenAccount={toggleOpenAccount} />}

@@ -19,7 +19,7 @@ const { Header } = Layout
 interface Props {}
 
 const Navbar: React.FC<Props> = () => {
-	const { account } = useWeb3React()
+	const { account, isActive } = useWeb3React()
 	// const navigate = useNavigate()
 	// const isNftPage = useIsNftPage()
 
@@ -42,9 +42,18 @@ const Navbar: React.FC<Props> = () => {
 						{/* <div className="flex xl:hidden relative">
 							<SearchTabs />
 						</div> */}
-						<Chain />
-						{account ? <AccountWallet containerClass="hidden sm:flex" /> : <Web3Connect containerClass="hidden sm:flex" />}
-						<GlobalSetting containerClass="hidden sm:flex" />
+						{isActive && (
+							<>
+								<Chain />
+								{account ? <AccountWallet containerClass="hidden sm:flex" /> : <Web3Connect containerClass="hidden sm:flex" />}
+								<GlobalSetting containerClass="hidden sm:flex" />
+							</>
+						)}
+						{!isActive && (
+							<div className="w-4/5 sm:w-2/5 mr-2 sm:mr-0">
+								<div className="w-full h-3 m-auto animate-pulse bg-slate-700 rounded" />
+							</div>
+						)}
 					</div>
 				</div>
 			</nav>

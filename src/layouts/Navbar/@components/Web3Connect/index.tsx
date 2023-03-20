@@ -1,7 +1,12 @@
 import React, { useCallback, useEffect } from "react"
 import { useAppDispatch } from "#/redux/store"
 import { useWeb3React } from "@web3-react/core"
-import { Connector } from "@web3-react/types"
+import { GnosisSafe } from "@web3-react/gnosis-safe"
+import { WalletConnect } from "@web3-react/walletconnect"
+import { Network } from "@web3-react/network"
+import { MetaMask } from "@web3-react/metamask"
+import { CoinbaseWallet } from "@web3-react/coinbase-wallet"
+// import { Connector } from "@web3-react/types"
 import { Button } from "antd"
 import { DownOutlined, UpOutlined } from "@ant-design/icons"
 import clsx from "clsx"
@@ -28,6 +33,8 @@ const Web3Connect: React.FC<Props> = ({ containerClass }) => {
 	const { chainId, connector } = useWeb3React()
 	const dispatch = useAppDispatch()
 
+	const connectionType = getConnection(connector).type
+
 	useEffect(() => {
 		if (chainId && connector !== networkConnection.connector) {
 			networkConnection.connector.activate(chainId)
@@ -35,41 +42,79 @@ const Web3Connect: React.FC<Props> = ({ containerClass }) => {
 	}, [chainId, connector])
 
 	const tryActivation = useCallback(
-		async (connector: Connector) => {
-			const connectionType = getConnection(connector).type
-			//   // log selected wallet
-			//   sendEvent({
-			// 	category: 'Wallet',
-			// 	action: 'Change Wallet',
-			// 	label: connectionType,
-			//   })
+		(connector: unknown) => {
 			togglePending()
-
-			try {
-				dispatch(updateConnectionError({ connectionType, error: undefined }))
-				// await connector.provider?.request({
-				// 	method: "wallet_switchEthereumChain",
-				// 	params: [
-				// 		{
-				// 			chainId: `0x${chainId}`,
-				// 		},
-				// 	],
-				// })
-				// console.log("active error")
-				await connector.activate(chainId)
-				dispatch(updateSelectedWallet({ wallet: connectionType }))
-				closeWallet()
-			} catch (error) {
-				dispatch(updateConnectionError({ connectionType, error: `Can't Connect to Network` }))
-				// sendAnalyticsEvent(InterfaceEventName.WALLET_CONNECT_TXN_COMPLETED, {
-				//   result: WalletConnectionResult.FAILED,
-				//   wallet_type: getConnectionName(connectionType),
-				// })
-			} finally {
+			dispatch(updateConnectionError({ connectionType, error: undefined }))
+			if (connector instanceof GnosisSafe) {
+				// console.log("this 1 instances")
+				connector
+					.activate()
+					.then((res) => {
+						console.log(res, "res")
+						closeWallet()
+					})
+					.catch((err) => {
+						console.log(err, "catch")
+						closePending()
+						dispatch(updateConnectionError({ connectionType, error: `Can't Connect to Network` }))
+					})
+			} else if (
+				connector instanceof WalletConnect ||
+				connector instanceof Network ||
+				connector instanceof MetaMask ||
+				connector instanceof CoinbaseWallet
+			) {
+				console.log("this 4 instances")
+				connector
+					.activate()
+					// .activate(Number(chainId))
+					.then((res) => {
+						console.log(res, "res")
+						dispatch(updateSelectedWallet({ wallet: connectionType }))
+						closeWallet()
+					})
+					.catch((err) => {
+						console.log(err, "catch")
+						closePending()
+						dispatch(updateConnectionError({ connectionType, error: `Can't Connect to Network` }))
+					})
+			} else {
 				closePending()
+				dispatch(updateConnectionError({ connectionType, error: `Can't Connect to Network` }))
 			}
+			// //   // log selected wallet
+			// //   sendEvent({
+			// // 	category: 'Wallet',
+			// // 	action: 'Change Wallet',
+			// // 	label: connectionType,
+			// //   })
+			// togglePending()
+
+			// try {
+			// 	dispatch(updateConnectionError({ connectionType, error: undefined }))
+			// 	// await connector.provider?.request({
+			// 	// 	method: "wallet_switchEthereumChain",
+			// 	// 	params: [
+			// 	// 		{
+			// 	// 			chainId: `0x${chainId}`,
+			// 	// 		},
+			// 	// 	],
+			// 	// })
+			// 	// console.log("active error")
+			// 	await connector.activate(chainId)
+			// 	dispatch(updateSelectedWallet({ wallet: connectionType }))
+			// 	closeWallet()
+			// } catch (error) {
+			// 	dispatch(updateConnectionError({ connectionType, error: `Can't Connect to Network` }))
+			// 	// sendAnalyticsEvent(InterfaceEventName.WALLET_CONNECT_TXN_COMPLETED, {
+			// 	//   result: WalletConnectionResult.FAILED,
+			// 	//   wallet_type: getConnectionName(connectionType),
+			// 	// })
+			// } finally {
+			// 	closePending()
+			// }
 		},
-		[dispatch]
+		[closeWallet, closePending]
 	)
 
 	const onCloseWallet = () => {
