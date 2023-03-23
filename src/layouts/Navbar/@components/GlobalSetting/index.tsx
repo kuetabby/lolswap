@@ -1,5 +1,5 @@
 import React from "react"
-import { Button, Modal } from "antd"
+import { Button } from "antd"
 import { SettingOutlined } from "@ant-design/icons"
 import clsx from "clsx"
 
