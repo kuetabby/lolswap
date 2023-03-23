@@ -16,8 +16,8 @@
 }
 
 .header-settings-title-container {
-	@apply flex items-center text-white font-semibold pb-3;
-	border-bottom: 1px solid white;
+	@apply flex items-center text-black dark:text-white font-semibold pb-3 border-b-black dark:border-b-white;
+	border-bottom: 1px solid;
 }
 
 .header-settings-body-container {
@@ -27,7 +27,7 @@
 }
 
 .header-settings-wrapper {
-	@apply flex items-center py-1 my-2 cursor-pointer text-white;
+	@apply flex items-center py-1 my-2 cursor-pointer text-black dark:text-white;
 }
 
 .header-settings-left-wrapper {
@@ -45,19 +45,29 @@
 }
 
 .header-settings-wrapper:hover > .header-settings-right-wrapper {
-	color: white;
+	@apply text-black dark:text-white;
 }
 
-.heder-slippage-container {
+.header-slippage-container {
 	@apply flex justify-between items-center w-full;
 }
 
 .header-slippage-list-container {
-	@apply flex justify-between w-3/4 sm:w-2/3 rounded-md bg-black;
+	@apply flex justify-between w-3/4 sm:w-2/3 rounded-md bg-slate-100 dark:bg-dark-secondary;
 }
 
 .header-slippage-button {
-	@apply w-12 sm:w-5/12 px-3 border-none outline-none !rounded-lg bg-black;
+	@apply w-12 sm:w-5/12 px-3 border-none outline-none !rounded-lg bg-slate-100 dark:bg-dark-secondary;
+}
+
+.header-slippage-input {
+	@apply bg-slate-100 dark:bg-dark-secondary text-black dark:text-white text-center w-auto overflow-hidden border-none placeholder:!text-slate-500 focus:!outline-0 active:!outline-0;
+}
+
+.frontrun-slippage-container {
+	@apply w-full bg-red-300 opacity-95 mt-3 overflow-auto border-none !rounded-xl dark:bg-red-500 dark:shadow-dark-shadow dark:opacity-100;
+	height: 5.5em;
+	/* background: rgba(193, 61, 84, 0.25); */
 }
 
 @media (min-width: theme("screens.md")) {

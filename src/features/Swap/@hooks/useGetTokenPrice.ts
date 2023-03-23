@@ -105,7 +105,7 @@ export function useGet1inchTokenPrice({ fromToken, toToken, sellAmount }: Custom
 	const { chainId } = useWeb3React()
 	const dispatch = useAppDispatch()
 
-	const amount = String(sellAmount).split(".").join("")
+	const amount = String(sellAmount).split(",").join("")
 
 	const url = `https://api.1inch.io/v5.0/${chainId}/quote?fromTokenAddress=${fromToken}&toTokenAddress=${toToken}&amount=${amount}`
 

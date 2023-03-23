@@ -1,0 +1,11 @@
+.swap-container {
+	@apply flex flex-wrap justify-center items-center w-full my-4 font-sans;
+}
+
+.swap-card-container {
+	@apply w-full !p-0 bg-white !text-slate-800 dark:bg-dark-secondary dark:!text-gray-300 sm:w-2/4 lg:w-2/5 xl:w-1/3 2xl:w-30% m-2 sm:m-0;
+}
+
+.switcher-wrapper {
+	@apply w-6 h-6 rounded-xl m-auto text-black dark:text-white bg-slate-300 dark:bg-dark-switcher cursor-pointer hover:text-blue-500 hover:dark:text-blue-500;
+}

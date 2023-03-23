@@ -35,14 +35,10 @@ export const Confirmation: React.FC<Props> = ({ closeConfirmModal, onImportToken
 			onCancel={closeConfirmModal}
 			className="confirmation-token-modal top-20"
 			width={475}
-			title={<div className="text-white text-center font-bold">Import a token</div>}
+			title={<div className="text-black dark:text-white text-center font-bold">Import a token</div>}
 			footer={null}
 		>
-			<Card
-				className="w-full h-full mt-4 mb-2 !p-0 border-white !rounded-xl"
-				bodyStyle={{ padding: "0px" }}
-				style={{ background: "#131823" }}
-			>
+			<Card className="confirmation-card-container" bodyStyle={{ padding: "0px" }}>
 				<List
 					dataSource={[token]}
 					className="custom-list-container"
@@ -59,26 +55,32 @@ export const Confirmation: React.FC<Props> = ({ closeConfirmModal, onImportToken
 										/>
 									}
 									title={
-										<div className="flex text-white w-full">
+										<div className="flex text-black dark:text-white w-full">
 											<div className="mr-4">{item.name}</div>
-											<span className="bg-black mb-1 p-1" style={{ fontSize: "0.75em" }}>
+											<span className="bg-slate-100 dark:bg-black mb-1 p-1" style={{ fontSize: "0.75em" }}>
 												{item.symbol?.toLocaleUpperCase()}
 											</span>
 										</div>
 									}
 									description={
-										<div className="flex justify-between mt-1" style={{ color: "#6C86AD" }}>
+										<div
+											className="flex justify-between mt-1 text-gray-500"
+											// style={{ color: "#6C86AD" }}
+										>
 											<div className="text-xs pb-2">
 												{item.id && shortenAddress(item.id)}
 												<Tooltip placement="top" title="Copy">
-													<CopyOutlined className="ml-2 cursor-pointer hover:!text-white" onClick={() => copyContent(item.id)} />
+													<CopyOutlined
+														className="ml-2 cursor-pointer hover:!text-black hover:dark:!text-white"
+														onClick={() => copyContent(item.id)}
+													/>
 												</Tooltip>
 											</div>
 											<a
-												className="text-xs font-semibold cursor-pointer hover:!text-white"
+												className="text-xs font-semibold cursor-pointer text-gray-500 hover:!text-black hover:dark:!text-white"
 												target="_blank"
 												href={`https://etherscan.io/token/${item.id}`}
-												style={{ color: "#6C86AD" }}
+												// style={{ color: "#6C86AD" }}
 											>
 												Etherscan
 												<LinkOutlined className="ml-2" />
@@ -91,13 +93,9 @@ export const Confirmation: React.FC<Props> = ({ closeConfirmModal, onImportToken
 					}}
 				/>
 			</Card>
-			<Card
-				className="w-full h-40 mt-2 opacity-75 !p-0 border-none !rounded-xl"
-				bodyStyle={{ padding: "1em", color: "white" }}
-				style={{ boxShadow: "inset 0 0 0 1px #202835", background: "rgba(193, 61, 84, .16)" }}
-			>
-				<div className="text-red-400 font-semibold text-lg">Trade at your own risk!</div>
-				<div className="text-white font-semibold leading-5 mt-2" style={{ fontSize: "1em" }}>
+			<Card className="confirmation-warning-card-container" bodyStyle={{ padding: "1em" }}>
+				<div className="text-red-500 font-semibold text-lg">Trade at your own risk!</div>
+				<div className="text-black dark:text-white font-semibold leading-5 mt-2" style={{ fontSize: "1em" }}>
 					Anyone can create a token, including creating fake versions of existing tokens that claim to represent projects
 					<div className="mt-4">If you purchase this token, you may not be able to sell it back</div>
 				</div>

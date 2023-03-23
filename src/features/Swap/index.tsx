@@ -21,6 +21,8 @@ import { resetGasPriceAmount, switchTrade } from "#/redux/slices/Swap"
 
 import { WalletConnectConfig } from "../../library/ConfigWalletConnect"
 
+import "./style.css"
+
 interface Props {}
 
 const Swap: React.FC<Props> = () => {
@@ -29,9 +31,9 @@ const Swap: React.FC<Props> = () => {
 	const { isSwitchChain } = useAppSelector((state) => state.application)
 
 	const numericCurrentDecimal = +currentSellToken.decimals
-	const currentSellAmount = +currentSellToken.amount
+	const currentSellAmount = currentSellToken.amount.split(",").join("")
 	const debounceCurrentAmount = useDebounce(currentSellAmount, 500)
-	const calculatedCurrentAmount = debounceCurrentAmount * 10 ** numericCurrentDecimal
+	const calculatedCurrentAmount = +debounceCurrentAmount * 10 ** numericCurrentDecimal
 	const stringifyCurrentAmount = calculatedCurrentAmount.toLocaleString().split(",").join("")
 
 	const { account, provider, chainId } = useWeb3React()
@@ -126,23 +128,19 @@ const Swap: React.FC<Props> = () => {
 		}
 	}
 
-	if (isSwitchChain) {
+	if (isSwitchChain || !chainId) {
 		return <SwitchLoader />
 	}
 
 	return (
 		<WalletConnectConfig>
-			<div className="flex flex-wrap justify-center items-center w-full my-4 font-sans">
-				<AppCard className="!text-white w-full sm:w-2/4 lg:w-2/5 xl:w-1/3 2xl:w-30% m-2 sm:m-0" style={{ background: "#131823" }}>
+			<div className="swap-container">
+				<AppCard className="swap-card-container">
 					<HeaderSwapButton isSuccessPrice={isSuccessPrice} isFetchingPrice={isFetchingPrice} refetchPrice={refetchPrice} />
 					<SellCard />
 					<div className="relative z-10">
 						<div className="text-center -my-4 mx-0">
-							<div
-								className="w-6 h-6 rounded-xl m-auto cursor-pointer hover:text-blue-500"
-								onClick={() => dispatch(switchTrade())}
-								style={{ background: "#324054" }}
-							>
+							<div className="switcher-wrapper" onClick={() => dispatch(switchTrade())}>
 								<ArrowDownOutlined className="mt-1" style={{ fontSize: "1.25em" }} />
 							</div>
 						</div>
@@ -154,7 +152,7 @@ const Swap: React.FC<Props> = () => {
 						isFetchingPrice={isFetchingPrice}
 						isLoadingSwap={isLoadingSwap}
 						isErrorPrice={isErrorPrice}
-						sellAmount={currentSellAmount}
+						sellAmount={+currentSellAmount}
 						allowance={dataAllowance?.allowance}
 						errorPrice={errorPrice}
 						onSwap={onSwap}

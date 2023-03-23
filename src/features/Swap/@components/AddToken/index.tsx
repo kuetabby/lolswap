@@ -120,7 +120,7 @@ const AddToken: React.FC<Props> = ({ closeModal, isOpen }) => {
 				onCancel={closeModal}
 				className="search-token-modal top-20"
 				width={450}
-				title={<div className="text-white text-center font-semibold mb-4">Add a token</div>}
+				title={<div className="text-black dark:text-white text-center font-semibold mb-4">Add a token</div>}
 				footer={null}
 			>
 				<Input
@@ -145,7 +145,7 @@ const AddToken: React.FC<Props> = ({ closeModal, isOpen }) => {
 									title={
 										<div className="flex justify-between">
 											<div className="flex">
-												<div className="text-white mr-4">{item.name}</div>
+												<div className="item-name mr-4">{item.name}</div>
 												{showWarning(item, <TokenWarningIcon warning={checkWarning(item.id)} />, false)}
 											</div>
 											{showWarning(
@@ -157,7 +157,7 @@ const AddToken: React.FC<Props> = ({ closeModal, isOpen }) => {
 											)}
 										</div>
 									}
-									description={<div className="text-white">{item.symbol}</div>}
+									description={<div className="item-description">{item.symbol}</div>}
 								/>
 							</List.Item>
 						)

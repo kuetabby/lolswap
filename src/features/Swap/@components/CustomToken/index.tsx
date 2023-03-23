@@ -11,11 +11,12 @@ import useDebounce from "#/shared/hooks/useDebounce"
 
 // import { checkWarning } from "#/@app/utility/Token/checkWarning"
 
+import { removeSerializedToken } from "#/redux/slices/User"
+
 import type { TokenUniswap } from "#/layouts/Navbar/@hooks/useSearchTokens"
 
 import "./style.css"
 import "../SelectToken/style.css"
-import { removeSerializedToken } from "#/redux/slices/User"
 
 interface Props {}
 
@@ -62,7 +63,7 @@ const CustomToken: React.FC<Props> = () => {
 	return (
 		<>
 			<Input
-				className="py-2 mb-2"
+				className="py-2 mt-1 mb-2"
 				prefix={<SearchOutlined style={{ color: "gray", fontWeight: "bold", fontSize: "1.35em", marginRight: "0.25em" }} />}
 				onChange={onChangeValue}
 				value={searchValue}
@@ -82,7 +83,7 @@ const CustomToken: React.FC<Props> = () => {
 								title={
 									<div className="flex justify-between">
 										<div className="flex">
-											<div className="text-white mr-4">{item.name}</div>
+											<div className="item-name mr-4">{item.name}</div>
 											{/* {showWarning(item, <TokenWarningIcon warning={checkWarning(item.id)} />)} */}
 										</div>
 										<div className="flex justify-between w-1/5">
@@ -103,7 +104,7 @@ const CustomToken: React.FC<Props> = () => {
 										</div>
 									</div>
 								}
-								description={<div className="text-white">{item.symbol}</div>}
+								description={<div className="item-description">{item.symbol}</div>}
 							/>
 						</List.Item>
 					)

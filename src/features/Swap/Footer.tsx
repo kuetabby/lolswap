@@ -5,6 +5,8 @@ import { Button } from "antd"
 import { AxiosError } from "axios"
 
 import { ErrorResponse } from "./@hooks/useGetTokenPrice"
+
+import { formatTokenAmount } from "./@utils"
 interface Props {
 	allowance?: string
 	sellAmount: number
@@ -38,6 +40,7 @@ export const FooterSwapButton: React.FC<Props> = ({
 
 	const { account } = useWeb3React()
 
+	const formattedFromAmount = formatTokenAmount(fromAmount)
 	const isCurrentSellAmountEmpty = sellAmount === 0
 	const isAmountExceedBalance = sellAmount > +tokenBalance
 
@@ -49,10 +52,10 @@ export const FooterSwapButton: React.FC<Props> = ({
 						Select Token
 					</Button>
 				)
-			} else if (isAmountExceedBalance || !Boolean(+fromAmount)) {
+			} else if (isAmountExceedBalance || !Boolean(+formattedFromAmount)) {
 				return (
 					<Button className={className} type="primary" disabled>
-						{!Boolean(+fromAmount) && "Input Amount of Token"}
+						{!Boolean(+formattedFromAmount) && "Input Amount of Token"}
 						{isAmountExceedBalance && "Insufficient Balance"}
 					</Button>
 				)

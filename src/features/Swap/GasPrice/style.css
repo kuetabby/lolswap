@@ -1,0 +1,7 @@
+.card-gas-container {
+	@apply w-full mt-4 border-none !rounded-xl bg-slate-100 dark:bg-dark-primary shadow-slate-400 dark:shadow-dark-shadow;
+}
+
+.gas-container {
+	@apply w-full h-10 flex justify-between items-center py-0 px-2;
+}

@@ -35,11 +35,7 @@ const BuyCard: React.FC<Props> = ({ data, isFetching }) => {
 
 	return (
 		<>
-			<Card
-				className="w-full h-28 mt-2 !p-0 border-none !rounded-xl"
-				bodyStyle={{ padding: "1em" }}
-				style={{ background: "transparent", boxShadow: "inset 0 0 0 1px #202835" }}
-			>
+			<Card className="card-buy-container" bodyStyle={{ padding: "1em" }}>
 				<div className="buy-container">
 					<div className="w-full flex justify-between">
 						<p className="buy-text-info">You Buy</p>
@@ -67,7 +63,9 @@ const BuyCard: React.FC<Props> = ({ data, isFetching }) => {
 						</div>
 						<div className="w-1/2 flex items-center">
 							{data?.toToken.address && !isFetching && (
-								<div className="w-full text-sm text-right text-white font-semibold">{Number(currentTrade.amount)}</div>
+								<div className="w-full text-sm text-right text-black dark:text-white font-semibold">
+									{Number(currentTrade.amount).toLocaleString("en-US")}
+								</div>
 							)}
 							{isFetching && (
 								<div className="w-full flex items-end justify-end">

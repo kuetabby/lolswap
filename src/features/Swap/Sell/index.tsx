@@ -1,7 +1,8 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useRef } from "react"
 import { useAppSelector, useAppDispatch } from "#/redux/store"
 import { useWeb3React } from "@web3-react/core"
-import { Card, InputNumber, Spin } from "antd"
+import { NumberFormatValues, NumericFormat } from "react-number-format"
+import { Card, Spin } from "antd"
 import { DownOutlined } from "@ant-design/icons"
 
 import SelectToken from "../@components/SelectToken"
@@ -19,18 +20,25 @@ import "./style.css"
 interface Props {}
 
 const SellCard: React.FC<Props> = () => {
-	const { chainId, account } = useWeb3React()
-
 	const currentTrade = useAppSelector((state) => state.swapTransaction.from)
 
 	const [isSearchToken, toggleSearchToken] = useToggle()
 
+	const [balance, isLoadingBalance] = useBalanceTokenBased(currentTrade)
+
+	const { chainId, account } = useWeb3React()
+	const dispatch = useAppDispatch()
+
 	const info = chainId ? getChainInfo(chainId) : undefined
 	const isSupported = !!info
 
-	const [balance, isLoadingBalance] = useBalanceTokenBased(currentTrade)
+	const inputRef = useRef<HTMLInputElement>(null)
 
-	const dispatch = useAppDispatch()
+	useEffect(() => {
+		if (inputRef.current) {
+			inputRef.current.focus()
+		}
+	}, [])
 
 	useEffect(() => {
 		if (isSupported) {
@@ -38,17 +46,13 @@ const SellCard: React.FC<Props> = () => {
 		}
 	}, [balance, isSupported])
 
-	const onChangeTokenAmount = (e: string | null) => {
-		dispatch(setSellTradeAmount(String(e || 0)))
+	const onChangeTokenAmount = (values: NumberFormatValues) => {
+		dispatch(setSellTradeAmount(String(values.formattedValue)))
 	}
 
 	return (
 		<>
-			<Card
-				className="w-full h-28 mb-2 !p-0 !border-none !rounded-xl"
-				bodyStyle={{ padding: "1em" }}
-				style={{ background: "#06070A" }}
-			>
+			<Card className="card-sell-container" bodyStyle={{ padding: "1em" }}>
 				<div className="sell-container">
 					<div className="w-full flex justify-between">
 						<p className="sell-text-info">You Sell</p>
@@ -71,16 +75,16 @@ const SellCard: React.FC<Props> = () => {
 							)}
 							<DownOutlined />
 						</div>
-						<InputNumber
-							className="w-6/12 sell-input-amount"
-							decimalSeparator="."
-							maxLength={10}
-							bordered={false}
-							formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-							parser={(value) => value!.replace(/\$\s?|(,*)/g, "")}
-							stringMode
+						<NumericFormat
+							className="w-6/12 sell-input-amount text-black dark:text-white text-right"
+							getInputRef={inputRef}
 							value={currentTrade.amount}
-							onChange={onChangeTokenAmount}
+							onValueChange={onChangeTokenAmount}
+							thousandSeparator=","
+							decimalSeparator="."
+							decimalScale={7}
+							allowNegative={false}
+							maxLength={18}
 						/>
 					</div>
 					{currentTrade.name && (

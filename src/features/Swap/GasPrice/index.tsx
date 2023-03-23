@@ -8,6 +8,7 @@ import { useGetTokenAggregator } from "../@hooks/useGetTokenPriceAggregator"
 
 import type { Swap1inchPrice } from "#/redux/@models/Swap"
 
+import "./style.css"
 interface Props {
 	data?: Swap1inchPrice
 }
@@ -47,16 +48,15 @@ const GasPrice: React.FC<Props> = ({ data }) => {
 
 	return (
 		<Card
-			className="w-full mt-4 border-none !rounded-xl"
+			className="card-gas-container"
 			bodyStyle={{
 				padding: "0px 0.5em",
 			}}
-			style={{ background: "#06070A", boxShadow: "inset 0 0 0 1px #202835" }}
 		>
-			<div className="w-full h-10 flex justify-between items-center py-0 px-2">
+			<div className="gas-container">
 				{(!Boolean(formattedPrice) || !gasLimit) && <div className="w-2/3 h-3 animate-pulse bg-slate-700 rounded mr-2" />}
 				{Boolean(formattedPrice) && Boolean(gasLimit) && (
-					<div className="w-2/3 flex text-white font-semibold text-xs md:text-sm">{text}</div>
+					<div className="w-2/3 flex text-black dark:text-white font-semibold text-xs md:text-sm">{text}</div>
 				)}
 				<Tooltip placement="topLeft" title="Estimated Gas">
 					<div className="w-auto flex justify-end">{displayGasCost()}</div>

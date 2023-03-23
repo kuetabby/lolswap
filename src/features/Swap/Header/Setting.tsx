@@ -1,7 +1,8 @@
 import React, { useEffect } from "react"
 import { useAppDispatch, useAppSelector } from "#/redux/store"
 import { useWeb3React } from "@web3-react/core"
-import { Button, Card, Input, Modal } from "antd"
+import { NumberFormatValues, NumericFormat } from "react-number-format"
+import { Button, Card, Modal } from "antd"
 import { AimOutlined, ControlOutlined, DownOutlined, LeftOutlined, RightOutlined, UpOutlined } from "@ant-design/icons"
 import clsx from "clsx"
 
@@ -38,10 +39,9 @@ const Settings: React.FC<Props> = ({ closeModal, isOpen }) => {
 		}
 	}, [slippageAmount])
 
-	const onChangeSlippageAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const { value } = e.target
+	const onChangeSlippageAmount = (values: NumberFormatValues) => {
 		slippageType === "button" && dispatch(setSlippageType("input"))
-		dispatch(setSlippageAmount(value))
+		dispatch(setSlippageAmount(values.formattedValue))
 	}
 
 	const onSetSlippageAmount = (value: React.MouseEvent<HTMLAnchorElement> & React.MouseEvent<HTMLButtonElement>) => {
@@ -73,14 +73,14 @@ const Settings: React.FC<Props> = ({ closeModal, isOpen }) => {
 							</div>
 							<div className="header-settings-center-wrapper">Slippage tolerance</div>
 							<div className="header-settings-right-wrapper">
-								<span className={clsx("mr-3 hover:!text-white", isSlippageFrontrun && "text-red-400")}>
+								<span className={clsx("mr-3 hover:!text-black hover:dark:!text-white", isSlippageFrontrun && "text-red-400")}>
 									{slippageAmount}% {!isSlippageButton && <span className="text-sm">Custom</span>}
 								</span>
 								{isCollapseSlippage ? <UpOutlined /> : <DownOutlined />}
 							</div>
 						</div>
 						<div
-							className={clsx("heder-slippage-container", isCollapseSlippage ? "!h-8" : "!h-0 overflow-hidden")}
+							className={clsx("header-slippage-container", isCollapseSlippage ? "!h-8" : "!h-0 overflow-hidden")}
 							style={{ transition: "all 0.2s ease-in-out" }}
 						>
 							<Button
@@ -128,24 +128,30 @@ const Settings: React.FC<Props> = ({ closeModal, isOpen }) => {
 								>
 									1%
 								</Button>
-								<Input
+								<NumericFormat
+									className={clsx("header-slippage-input", !isSlippageButton && "!border-solid !border-2 !border-blue-500")}
 									value={!isSlippageButton ? slippageAmount : ""}
-									className={clsx(
-										"bg-black text-white border-none placeholder:!text-slate-500",
-										!isSlippageButton && "!border-solid !border-2 !border-blue-500"
-									)}
-									onChange={onChangeSlippageAmount}
+									onValueChange={onChangeSlippageAmount}
+									decimalSeparator="."
+									decimalScale={6}
+									allowNegative={false}
+									maxLength={6}
 									placeholder="Custom"
+									isAllowed={(values) => {
+										const { floatValue } = values
+										if (floatValue) {
+											return floatValue < 50
+										}
+										return true
+									}}
 								/>
 							</div>
 						</div>
 						{isCollapseSlippage && isSlippageFrontrun && (
-							<Card
-								className="w-full mt-3 p-auto border-none !rounded-xl"
-								bodyStyle={{ padding: "1em", color: "white" }}
-								style={{ height: "5.5em", boxShadow: "inset 0 0 0 1px #202835", background: "rgba(193, 61, 84, .25)" }}
-							>
-								<div className="text-white text-base">Transaction might be frontrun because of high slippage tolerance.</div>
+							<Card className="frontrun-slippage-container" bodyStyle={{ padding: "1em" }}>
+								<div className="text-black dark:text-white text-base">
+									Transaction might be frontrun because of high slippage tolerance.
+								</div>
 							</Card>
 						)}
 						<div className="header-settings-wrapper" onClick={toggleCustomToken}>

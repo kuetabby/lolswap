@@ -1,15 +1,18 @@
+.card-sell-container {
+	@apply w-full h-28 mb-2 !p-0 !border-none !rounded-xl bg-slate-100 dark:bg-dark-primary;
+}
+
 .sell-container {
-	@apply text-white text-left text-xs !p-0;
+	@apply text-gray-500 text-left text-xs !p-0;
 }
 
 .sell-text-info,
 .sell-balance-info {
-	@apply m-0 hover:!text-white;
-	color: #6c86ad;
+	@apply m-0  hover:!text-black hover:dark:!text-white;
 }
 
 .sell-text-balance {
-	@apply flex justify-between h-4;
+	@apply flex justify-between h-4 text-black dark:text-gray-500;
 	min-width: 22.5%;
 	max-width: 50%;
 }
@@ -19,20 +22,20 @@
 }
 
 .sell-wrapper-token {
-	@apply w-2/5 h-8 px-2 flex items-center cursor-pointer;
+	@apply w-2/5 h-8 px-2 flex items-center cursor-pointer text-slate-700 dark:text-white;
 }
 
 .sell-wrapper-token:hover {
-	background-color: #99a1bd14;
+	@apply bg-slate-200 dark:bg-dark-hover;
 	transition: 250;
 }
 
 .sell-name-token {
-	@apply mx-3 w-full font-bold text-white text-lg flex leading-5;
+	@apply mx-3 w-full font-bold text-lg flex leading-5;
 }
 
 .sell-select-token {
-	@apply w-full text-white text-sm  font-semibold flex leading-5;
+	@apply w-full text-sm  font-semibold flex leading-5;
 }
 
 .sell-wrapper-balance {
@@ -40,11 +43,14 @@
 }
 
 .sell-input-amount {
-	@apply !border-b-2 border-solid  !border-b-white;
+	@apply bg-transparent border-none focus:!outline-0 active:!outline-0 dark:!border-b-white;
+	border-bottom: 1px solid black !important;
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 0px;
 }
 
-.sell-input-amount:hover:focus::after {
-	@apply !border-t-0 !border-l-0 !border-r-0;
+.sell-input-amount:hover {
+	@apply border-transparent;
 }
 
 .sell-input-amount > .ant-input-number-input-wrap > .ant-input-number-input {

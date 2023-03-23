@@ -1,15 +1,18 @@
+.card-buy-container {
+	@apply w-full h-28 mt-2 !p-0 border-none !rounded-xl bg-transparent shadow-sm shadow-slate-400 dark:shadow-dark-shadow;
+}
+
 .buy-container {
-	@apply text-white text-left text-xs !p-0;
+	@apply text-gray-400 text-left text-xs !p-0;
 }
 
 .buy-text-info,
 .buy-balance-info {
-	@apply m-0 hover:!text-white;
-	color: #6c86ad;
+	@apply m-0  hover:!text-black hover:dark:!text-white;
 }
 
 .buy-text-balance {
-	@apply flex justify-between h-4;
+	@apply flex justify-between h-4 text-black dark:text-gray-400;
 	min-width: 22.5%;
 	max-width: 50%;
 }
@@ -19,20 +22,20 @@
 }
 
 .buy-wrapper-token {
-	@apply w-2/5 h-8 px-2 flex items-center cursor-pointer;
+	@apply w-2/5 h-8 px-2 flex items-center cursor-pointer text-slate-700 dark:text-white;
 }
 
 .buy-wrapper-token:hover {
-	background-color: #99a1bd14;
+	@apply bg-slate-100 dark:bg-dark-hover;
 	transition: 250;
 }
 
 .buy-name-token {
-	@apply mx-3 w-full font-bold text-white text-lg flex leading-5;
+	@apply mx-3 w-full font-bold text-lg flex leading-5;
 }
 
 .buy-select-token {
-	@apply w-full text-white text-sm  font-semibold flex leading-5;
+	@apply w-full text-sm  font-semibold flex leading-5;
 }
 
 .buy-wrapper-balance {

@@ -70,3 +70,11 @@ export const formatTransactionAmount = (num: number | undefined | null, maxDigit
 	// console.log("fixed 2")
 	return `${Number(num.toFixed(2)).toLocaleString("en-US", { minimumFractionDigits: 2 })}`
 }
+
+export const formatTokenAmount = (value: string) => {
+	if (!!value) {
+		return value.split(" ").join("")
+	}
+
+	return value
+}

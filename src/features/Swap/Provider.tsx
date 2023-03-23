@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useEffect } from "react"
+import React, { PropsWithChildren, useCallback, useEffect } from "react"
 import { useAppDispatch } from "#/redux/store"
 import { useWeb3React, Web3ReactProvider } from "@web3-react/core"
 
@@ -9,6 +9,7 @@ import { resetTrade } from "#/redux/slices/Swap"
 import { connectors } from "./@utils"
 import { isSupportedChain } from "#/shared/constants/chains"
 import { RPC_PROVIDERS } from "#/shared/constants/providers"
+import { StaticJsonRpcProvider, Web3Provider } from "@ethersproject/providers"
 
 interface Props extends PropsWithChildren {}
 
@@ -66,26 +67,26 @@ function Tracer() {
 	}, [networkProvider, provider])
 
 	useEffect(() => {
-		getNetwork().then((res) => {
-			if (res.status === "success" && chainId) {
-				dispatch(resetTrade(chainId))
-			}
-		})
+		getNetwork(provider !== networkProvider ? networkProvider : provider, chainId)
 		provider?.detectNetwork().then(() => {
 			// const networkResponse = response as DetectNetwork
 			console.log("network changed")
 		})
-	}, [provider, chainId])
+	}, [provider, networkProvider, chainId])
 
-	const getNetwork = async () => {
-		try {
-			const request = await provider?.detectNetwork()
-			const response = await request
-			return { status: "success", response }
-		} catch (error) {
-			return { status: "error", error }
-		}
-	}
+	const getNetwork = useCallback(
+		async (provider: Web3Provider | StaticJsonRpcProvider | undefined, id?: number) => {
+			try {
+				const request = await provider?.detectNetwork()
+				const response = await request
+				id && dispatch(resetTrade(Number(id)))
+				return { status: "success", response }
+			} catch (error) {
+				return { status: "error", error }
+			}
+		},
+		[dispatch]
+	)
 
 	return null
 }
