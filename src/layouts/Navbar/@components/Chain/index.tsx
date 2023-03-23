@@ -55,7 +55,9 @@ export const Chain: React.FC<Props> = () => {
 			return (
 				<div className="chain-dropdown-item">
 					<img src={infoChain.logoUrl} alt={infoChain.label} className="!h-5 !w-5 mr-2" />
-					<div className={clsx("chain-label", chainId === id ? "!text-white" : "!text-gray-500")}>{infoChain.label}</div>
+					<div className={clsx("chain-label", chainId === id ? "text-black dark:!text-white" : "!text-gray-500")}>
+						{infoChain.label}
+					</div>
 					{chainId === id && <CheckOutlined className="!text-blue-500 text-base ml-1" />}
 				</div>
 			)

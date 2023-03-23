@@ -70,6 +70,7 @@ const Web3Connect: React.FC<Props> = ({ containerClass }) => {
 					// .activate(Number(chainId))
 					.then((res) => {
 						console.log(res, "res")
+						closePending()
 						dispatch(updateSelectedWallet({ wallet: connectionType }))
 						closeWallet()
 					})

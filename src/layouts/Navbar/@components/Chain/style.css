@@ -17,11 +17,11 @@
 }
 
 .chain-dropdown-container > .ant-dropdown-menu.ant-dropdown-menu-root {
-	@apply !bg-black;
+	@apply bg-white dark:bg-dark-secondary;
 }
 
 .ant-dropdown.chain-dropdown-container > .ant-dropdown-menu > .ant-dropdown-menu-item-only-child {
-	@apply hover:bg-slate-600;
+	@apply hover:dark:bg-slate-600;
 }
 
 .chain-dropdown-item,
@@ -35,7 +35,7 @@
 
 @media (min-width: theme("screens.2xl")) {
 	.chain-container {
-		width: 22.5%;
+		width: 21%;
 	}
 }
 

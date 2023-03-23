@@ -1,9 +1,9 @@
 .account-container {
-	@apply justify-between items-center w-full sm:w-3/4 lg:w-4/5 xl:w-2/5 2xl:w-1/3 h-10 lg:p-4 bg-transparent border-white rounded-3xl;
+	@apply justify-between items-center w-full sm:w-3/4 lg:w-4/5 xl:w-2/5 2xl:w-1/3 h-10 lg:p-4 bg-slate-500 dark:bg-transparent border-white rounded-3xl;
 }
 
 .account-container:hover {
-	background-color: #99a1bd14;
+	@apply dark:bg-dark-hover;
 	transition: 250;
 }
 

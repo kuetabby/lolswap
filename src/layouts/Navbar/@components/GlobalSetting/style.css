@@ -11,6 +11,35 @@
 	@apply mx-2 font-bold text-white text-base hidden lg:flex leading-5;
 }
 
+.global-setting-modal > .ant-modal-content {
+	@apply bg-slate-300 dark:bg-slate-900 py-6 px-3;
+}
+
+.global-setting-modal > .ant-modal-content > .ant-modal-close {
+	@apply mt-1 bg-transparent dark:bg-slate-800 dark:text-gray-500 hover:dark:text-white;
+}
+
+.global-setting-modal-title {
+	@apply text-black dark:text-white bg-slate-300 dark:bg-slate-900 text-center font-semibold pb-2 border-b border-b-slate-600;
+	border-bottom-style: solid;
+}
+
+.card-setting-container {
+	@apply w-full sm:w-47.5% h-24 sm:h-28 my-2 mx-1 bg-gray-100 dark:bg-dark-primary !border-none !rounded-xl cursor-pointer;
+}
+
+.card-setting-container:hover {
+	@apply bg-slate-200 dark:bg-slate-800;
+}
+
+.card-setting-title {
+	@apply text-black dark:text-gray-200 font-semibold;
+}
+
+.card-setting-subtitle {
+	@apply text-gray-400 font-semibold;
+}
+
 @media (min-width: 2560px) {
 	.global-setting-container {
 		width: 10%;

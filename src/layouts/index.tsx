@@ -20,12 +20,12 @@ const AppLayout: React.FC<Props> = () => {
 	const { account, isActive } = useWeb3React()
 
 	return (
-		<Layout className="app-layout dark-navbar">
+		<Layout className="app-layout">
 			<Navbar />
 			<Content className="app-main">
 				<Swap />
 			</Content>
-			<Footer className={clsx("app-footer")} style={{ background: "rgb(19, 24, 35)" }}>
+			<Footer className={clsx("app-footer", "!bg-white dark:!bg-dark-secondary")}>
 				{!isActive && (
 					<div
 						className="inline-block h-8 w-8 m-auto text-blue-500 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"

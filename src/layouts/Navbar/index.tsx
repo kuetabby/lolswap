@@ -28,8 +28,8 @@ const Navbar: React.FC<Props> = () => {
 	// useCheckNetwork()
 
 	return (
-		<Header className="!px-0 !h-20">
-			<nav className="base-nav-container md:!px-4 dark">
+		<Header className="!px-0 !h-20 !bg-white dark:!bg-dark-secondary">
+			<nav className="base-nav-container md:!px-4">
 				<div className={clsx("base-side-container", "left-side-container")}>
 					<div className="logo-container text-white">
 						<img src={pegasusLogoUrl} alt="pegasus-logo" className="w-12 h-12" />
